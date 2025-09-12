@@ -1,3 +1,8 @@
+# ards 0.1.2
+
+* Bug fix for byvars parameter in `add_ards()`.
+* Documentation fixes.
+
 # ards 0.1.1
 
 * Initial version.

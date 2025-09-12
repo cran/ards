@@ -1,7 +1,7 @@
 Package: ards
 Type: Package
 Title: Creates Analysis Results Datasets
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c( 
     person("David", "Bosak", email = "dbosak01@gmail.com", role = c("aut", "cre")),
     person("Kevin", "Kramer", email = "kkrame02@amgen.com", role = "ctb"),
@@ -20,13 +20,13 @@ BugReports: https://github.com/dbosak01/ards/issues
 Depends: R (>= 4.1)
 Suggests: dplyr, tidyr, tibble, testthat (>= 3.0.0), knitr, rmarkdown
 Config/testthat/edition: 3
-RoxygenNote: 7.2.1
+RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2023-03-20 13:26:18 UTC; dbosa
+Packaged: 2025-09-12 21:47:51 UTC; dbosa
 Author: David Bosak [aut, cre],
   Kevin Kramer [ctb],
   Jack Fuller [ctb],
   Matt Baldwin [ctb]
 Repository: CRAN
-Date/Publication: 2023-03-21 17:20:06 UTC
+Date/Publication: 2025-09-12 22:10:02 UTC

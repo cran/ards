@@ -1,14 +1,14 @@
 <!-- badges: start -->
 
 [![ards version](https://www.r-pkg.org/badges/version/ards)](https://cran.r-project.org/package=ards)
-[![ards lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://cran.r-project.org/package=ards)
+[![ards lifecycle](https://img.shields.io/badge/lifecycle-stable-blue.svg)](https://cran.r-project.org/package=ards)
 [![ards downloads](https://cranlogs.r-pkg.org/badges/ards)](https://cran.r-project.org/package=ards)
 [![ards total downloads](https://cranlogs.r-pkg.org/badges/grand-total/ards)](https://cran.r-project.org/package=ards)
 [![R-CMD-check](https://github.com/dbosak01/ards/workflows/R-CMD-check/badge.svg)](https://github.com/dbosak01/ards/actions)
 <!-- badges: end -->
 
 # Introduction to **ards**
-<!--<img src="man/images/reporter_new.png" align="left" height="138px" style="margin-right:10px;height:138px"/>-->
+<img src="man/images/ards.png" align="left" height="138px" style="margin-right:10px;height:138px"/>
 
 An Analysis Results Dataset (ARDS) is commonly used in the pharma-biotech industry
 to capture the results of an analysis in a tabular data structure.  The **ards**
