@@ -367,7 +367,7 @@ test_that("ards8: init_ards() works as expected when no parameters are passed.",
   
 })
 
-test_that("ards2: add_ards() works as expected on one column with multiple byvars.", {
+test_that("ards9: add_ards() works as expected on one column with multiple byvars.", {
   
   
   init_ards(studyid = "abc",
@@ -399,6 +399,380 @@ test_that("ards2: add_ards() works as expected on one column with multiple byvar
   expect_equal(res[ , "statval"], c(1, 2, 3, 4, 5, 6))
   expect_equal(res$byvar1[1], "label")
   expect_equal(res$byvar2[1], "group")
+  
+  
+})
+
+
+test_that("ards10: restore_ards() basic functionality.", {
+  
+  library(dplyr)
+  library(tibble)
+  library(tidyr)
+  
+  init_ards(studyid = "abc",
+            tableid = "01", adsns = c("adsl", "advs"),
+            population = "safety population",
+            time = "SCREENING", where = "saffl = TRUE")
+  
+  dat <- mtcars
+  dat$trt <- c(rep("A", 16), rep("B", 16))
+  
+  
+  mpgdf <- dat |>
+    select(mpg, trt) |>
+    group_by(trt) |>
+    summarize(n = n(),
+              mean = mean(mpg),
+              std = sd(mpg),
+              median = median(mpg),
+              min = min(mpg),
+              max = max(mpg)) |>
+    mutate(analvar = "mpg") |>
+    ungroup() |>
+    add_ards(statvars = c("n", "mean", "std", "median", "min", "max"),
+             statdesc = c("N", "Mean", "Std", "Median", "Min", "Max"),
+             anal_var = "mpg", trtvar = "trt") |>
+    transmute(analvar, trt,
+              n = sprintf("%d", n),
+              mean_sd = sprintf("%.1f (%.2f)", mean, std),
+              median = sprintf("%.1f", median),
+              min_max = sprintf("%.1f-%.1f", min, max)) |>
+    pivot_longer(c(n, mean_sd, median, min_max),
+                 names_to = "label", values_to = "stats") |>
+    pivot_wider(names_from = trt,
+                values_from = c(stats)) |>
+    transmute(analvar, label = c("N", "Mean (Std)", "Median", "Min-Max"),
+              trtA = A, trtB = B)
+  
+  mpgdf
+  
+  expect_equal(is.null(mpgdf), FALSE)
+  expect_equal(nrow(mpgdf), 4)
+  expect_equal(ncol(mpgdf), 4)
+  
+  
+  trt_pop <- count(dat, trt) |> deframe()
+  
+  cyldf <- dat |>
+    mutate(denom = trt_pop[paste0(dat$trt)]) |>
+    group_by(cyl, trt, denom) |>
+    summarize(cnt = n()) |>
+    mutate(analvar = "cyl", label = paste(cyl, "Cylinder"),  pct = denom / cnt) |>
+    ungroup() |>
+    add_ards(statvars = c("cnt", "denom", "pct"), statdesc = "label",
+             anal_var = "cyl", trtvar = "trt") |>
+    pivot_wider(names_from = trt,
+                values_from = c(cnt, pct)) |>
+    transmute(analvar, label,
+              trtA = sprintf("%1d (%5.2f%%)", cnt_A, pct_A),
+              trtB = sprintf("%1d (%5.2f%%)", cnt_B, pct_B),)
+  
+  cyldf
+  
+  expect_equal(is.null(cyldf), FALSE)
+  expect_equal(nrow(cyldf), 3)
+  expect_equal(ncol(cyldf), 4)
+  
+  final <- bind_rows(mpgdf, cyldf)
+  
+  final
+  
+  expect_equal(is.null(final), FALSE)
+  expect_equal(nrow(final), 7)
+  expect_equal(ncol(final), 4)
+  
+  
+  tmp <- get_ards()
+  tmp
+  
+  expect_equal(is.null(tmp), FALSE)
+  expect_equal(nrow(tmp), 30)
+  expect_equal(ncol(tmp), 33)
+  
+  # Init_vars TRUE
+  res <- restore_ards(tmp, init_vars = TRUE)
+  
+  expect_equal(length(res), 2)
+  expect_equal(names(res), c("mpg", "cyl"))
+  expect_equal(ncol(res$mpg), 14) 
+  expect_equal(nrow(res$mpg), 2)
+  expect_equal(ncol(res$cyl), 12)
+  expect_equal(nrow(res$cyl), 6)
+  
+  # Init_vars FALSE
+  res <- restore_ards(tmp)
+  
+  expect_equal(length(res), 2)
+  expect_equal(names(res), c("mpg", "cyl"))
+  expect_equal(ncol(res$mpg), 8) 
+  expect_equal(nrow(res$mpg), 2)
+  expect_equal(ncol(res$cyl), 6)
+  expect_equal(nrow(res$cyl), 6)
+  
+  # Test removing some variables
+  tmp$byvar9 <- NULL
+  tmp$byval9 <- NULL
+  tmp$statdesc <- NULL
+  tmp$resultid <- NULL
+  tmp$studyid <- NULL
+  tmp$tableid <- NULL
+  tmp$population <- NA
+  
+  # Should still work
+  res <- restore_ards(tmp)
+  
+  # Missing variables not output
+  expect_equal(length(res), 2)
+  expect_equal(names(res), c("mpg", "cyl"))
+  expect_equal(ncol(res$mpg), 8) 
+  expect_equal(nrow(res$mpg), 2)
+  expect_equal(ncol(res$cyl), 6)
+  expect_equal(nrow(res$cyl), 6)
+  
+  # Test removing required variable
+  tmp$anal_var <- NULL
+  expect_error(restore_ards(tmp))
+  
+})
+
+test_that("ards11: restore_ards() works with by variable.", {
+  
+  
+  df <- read.table(header = TRUE, text = '
+    var    val label         CNT DENOM   PCT                TRT
+    "cyl"  8   "8 Cylinder" 10   19     0.5263157894736842 A
+    "cyl"  6   "6 Cylinder" 4    19     0.2105263157894737 A
+    "cyl"  4   "4 Cylinder" 5    19     0.2631578947368421 A
+    "cyl"  8   "8 Cylinder" 4    13     0.3076923076923077 B
+    "cyl"  6   "6 Cylinder" 3    13     0.2307692307692308 B
+    "cyl"  4   "4 Cylinder" 6    13     0.4615384615384615 B')
+  
+  
+  init_ards(studyid = "abc",
+            tableid = "01", adsns = c("adsl", "advs"),
+            population = "safety population",
+            time = "SCREENING", where = "saffl = TRUE")
+  
+  # No trtvar but there is a byvar
+  add_ards(df, statvars = c('CNT', 'DENOM', 'PCT'), statdesc = "label",
+           anal_var = "cyl", anal_val = "val", byvars = "TRT")
+  
+  tmp <- get_ards()
+  
+  tmp
+  
+  expect_equal(is.null(tmp), FALSE)
+  expect_equal(nrow(tmp), 18)
+  expect_equal(ncol(tmp), 33)
+  
+  # Restore
+  res <- restore_ards(tmp)
+  
+  # Still 6 columns
+  expect_equal(is.null(res), FALSE)
+  expect_equal(nrow(res$cyl), 6)
+  expect_equal(ncol(res$cyl), 6)
+  
+})
+
+
+test_that("ards12: restore_ards() anal_var parameter works as expected.", {
+  
+  
+  init_ards(studyid = "abc",
+            tableid = "01", adsns = c("adsl", "advs"),
+            population = "safety population",
+            time = "SCREENING", where = "saffl = TRUE", reset = TRUE)
+  
+  
+  df1 <- data.frame("ACNT" = c(1, 2, 3), label = "Group1")
+  
+  
+  ards1 <- add_ards(df1, statvars = "ACNT", byvars = "label",
+                    anal_var = "cyl")
+  
+  df2 <- data.frame("ACNT" = c(4, 5, 6), label = "Group2")
+  
+  ards2 <- add_ards(df2, statvars = "ACNT", byvars = "label",
+                    anal_var = "cyl")
+  
+  ardsf <- get_ards()
+  
+  # Default restore
+  res <- restore_ards(ardsf)
+  
+  r1 <- res$cyl
+  
+  expect_equal(is.null(r1), FALSE)
+  expect_equal(nrow(r1), 6)
+  expect_equal(ncol(r1), 3)
+  expect_equal("anal_var" %in% names(r1), TRUE)
+
+  # Rename anal_var
+  res <- restore_ards(ardsf, anal_var = "analblock")
+  
+  r1 <- res$cyl
+  
+  expect_equal(is.null(r1), FALSE)
+  expect_equal(nrow(r1), 6)
+  expect_equal(ncol(r1), 3)
+  expect_equal("analblock" %in% names(r1), TRUE)
+  
+  
+  # Remove anal_var
+  res <- restore_ards(ardsf, anal_var = NULL)
+  
+  r1 <- res$cyl
+  
+  expect_equal(is.null(r1), FALSE)
+  expect_equal(nrow(r1), 6)
+  expect_equal(ncol(r1), 2)
+  expect_equal("anal_var" %in% names(r1), FALSE)
+  
+})
+
+
+test_that("ards13: restore_ards() with multiple by vars.", {
+  
+  
+  init_ards(studyid = "abc",
+            tableid = "01", adsns = c("adsl", "advs"),
+            population = "safety population",
+            time = "SCREENING", where = "saffl = TRUE", reset = TRUE)
+  
+  
+  df1 <- data.frame("ACNT" = c(1, 2, 3), label1 = "Group1", 
+                    label2 = c("A", "A", "B"))
+  
+  
+  ards1 <- add_ards(df1, statvars = "ACNT", byvars = c("label1", "label2"),
+                    anal_var = "cyl")
+  
+  df2 <- data.frame("ACNT" = c(4, 5, 6), label1 = "Group2", 
+                    label2 = c("B", "A", "B"))
+  
+  ards2 <- add_ards(df2, statvars = "ACNT", byvars = c("label1", "label2"),
+                    anal_var = "cyl")
+  
+  ardsf <- get_ards()
+  
+  # Default restore
+  res <- restore_ards(ardsf)
+  
+  r1 <- res$cyl
+  
+  expect_equal(is.null(r1), FALSE)
+  expect_equal(nrow(r1), 6)
+  expect_equal(ncol(r1), 4)
+  expect_equal("anal_var" %in% names(r1), TRUE)
+
+  
+})
+
+test_that("ards14: NA values retained through get_ards() and restore_ards() .", {
+  
+  
+  init_ards(studyid = "abc",
+            tableid = "01", adsns = c("adsl", "advs"),
+            population = "safety population",
+            time = "SCREENING", where = "saffl = TRUE", reset = TRUE)
+  
+  
+  df1 <- data.frame("ACNT" = c(1, 2, NA, 3))
+  
+  
+  ards1 <- add_ards(df1, statvars = "ACNT",
+                    anal_var = "cyl")
+  
+  df2 <- data.frame("ACNT" = c(4, 5, 6))
+  
+  ards2 <- add_ards(df2, statvars = "ACNT", 
+                    anal_var = "cyl")
+  
+  ardsf <- get_ards()
+  
+  expect_equal(is.null(ardsf), FALSE)
+  expect_equal(nrow(ardsf), 7)
+
+  
+  # Default restore
+  res <- restore_ards(ardsf)
+  
+  r1 <- res$cyl
+  
+  expect_equal(is.null(r1), FALSE)
+  expect_equal(nrow(r1), 7)
+  expect_equal(ncol(r1), 2)
+  
+  
+})
+
+test_that("ards15: restore_ards() works as expected with factors.", {
+  
+  
+  df <- read.table(header = TRUE, text = '
+    var    val label         CNT DENOM   PCT                TRT
+    "cyl"  8   "8 Cylinder" 10   19     0.5263157894736842 A
+    "cyl"  6   "6 Cylinder" 4    19     0.2105263157894737 A
+    "cyl"  4   "4 Cylinder" 5    19     0.2631578947368421 A
+    "cyl"  8   "8 Cylinder" 4    13     0.3076923076923077 B
+    "cyl"  6   "6 Cylinder" 3    13     0.2307692307692308 B
+    "cyl"  4   "4 Cylinder" 6    13     0.4615384615384615 B')
+  
+  
+  df$label <- factor(df$label, c("4 Cylinder", "6 Cylinder", "8 Cylinder"))
+  df$TRT <- factor(df$TRT, c("A", "B"))
+  
+  
+  init_ards(reset = TRUE)
+  
+  
+  add_ards(df, statvars = c('CNT', 'DENOM', 'PCT'), byvars = "label",
+           anal_var = "cyl", anal_val = "val", trtvar = "TRT")
+  
+  res <- get_ards()
+  
+  res
+  
+  # Initially should be character
+  expect_equal(class(res$trtval), "character")
+  
+  res1 <- restore_ards(res)
+  
+  r1 <- res1$cyl
+  
+  # Now they should be factors
+  expect_equal(is.null(r1), FALSE)
+  expect_equal(class(r1$TRT), "factor")
+  expect_equal(class(r1$label), "factor")
+  
+  
+  # Remove one of the factor variables
+  res$trtvar <- NULL
+  res$trtval <- NULL
+  
+  # Should get no error
+  res2 <- restore_ards(res)
+  
+  r2 <- res2$cyl
+  
+  expect_equal(is.null(r2), FALSE)
+  expect_equal("TRT" %in% names(r2), FALSE)
+  expect_equal(class(r2$label), "factor")
+  
+  
+  # Remove all factors
+  attr(res, "factors") <- NULL
+  
+  # Should get no error
+  res3 <- restore_ards(res)
+  
+  r3 <- res3$cyl
+  
+  expect_equal(is.null(r3), FALSE)
+  expect_equal("TRT" %in% names(r3), FALSE)
+  expect_equal(class(r3$label), "character")
   
   
 })

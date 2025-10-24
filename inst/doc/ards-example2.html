@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Example 2: ARDS in Serial</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Example 2: ARDS in Serial</h1>
+
+
+
+<p>The <strong>ards</strong> package also supports a design that
+separates the analysis from the reporting. This approach is called
+creating an ARDS in serial.</p>
+<div id="serial-ards-example" class="section level2">
+<h2>Serial ARDS Example</h2>
+<p>For this example, there are two programs. The first program performs
+the analysis and saves the results in ARDS format. The second program
+picks up the ARDS data, transposes it back into a usable structure, and
+generates the report.</p>
+<p>A diagram of the serial approach looks like this:</p>
+<p><img role="img" aria-label="ARDS in Serial Diagram" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA6cAAACzCAYAAAB1s2pgAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAEQZSURBVHhe7Z0JvFXj/v9/1//ncn9+9/64XEIXNzKmQkVzNKFpH02ukkQSSkpCGdJAydQoDRpQ0WgIESnRFRqIEinNSZM0Ud//67P2+a7z7Gevfc7Z++x99tp7fd6v1+dVZ+21nvWs9Zy9136f51nP+i8hhBBCCCGEEELSzH/ZCwghhBBCCCGEkOKGckoIIYQQQgghJO1QTgkhhBBCCCGEpB3KKSGEEEIIIYSQtEM5JYQQQgghhBCSdiinhBBCCCGEEELSDuWUEEIIIYQQQkjaoZwSQgghhBBCCEk7lFNCCCGEEEIIIWmHckoIIYQQQgghJO1QTgkhhBBCCCGEpB3KKSGEEEIIIYSQtEM5JYQQQgghhBCSdiinhBBCCCGEEELSDuWUEEIIIYQQQkjaoZwSQgghhBBCCEk7lFNCCCGEEEIIIWmHckoIIYQQQgghJO1QTgkhhBBCCCGEpB3KKSGEEEIIIYSQtEM5JYQQQgghhBCSdiinhBBCCCGEEELSDuWUEEIIIYQQQkjaoZwSQgghhBBCCEk7lFNCCCGEEEIIIWmHckoIIYQQQgghJO1QTgkhhBBCCCGEpB3KKSGEEEIIIYSQtEM5JYQQQgghhBCSdiinhBBCCCGEEELSDuWUEEIIIYQQQkjaCYyc7j9wUH5Yu0kWLFouU2Z+IE8//6o80G+UdHloqNx+39PStvMT0vK23tKkTU+p17K7VG/SWSrWv13K1LxZzrmilZQs39wJ/o9leA3r1G1xrzS5qaez7U2dHnfKQpkoG/vAvrBP7Bt1IIQQQgghhBASTVbJ6YpVa2XaW/NlyOjpjhxCFus07yYXVr9JTimT44ugLqgT6oY6oq6oM+pOCCGEEEIIIUElY+X0q2/XyCvT33cEr2HrB+TMCi2jRNBMyXJNpFKtehLKqS533FxB+nW9SEb3LiUvP36mTB9UUmY/d6p8OOJk+XT0ibJ0wgmyctLfZN2042Tr68fKnneOlkNzj3KC/2MZXsM6WPfT0Sc526IMlIUyUXbfrhc5+wqFqjv7Rh3sepnBMeBYcEw4NhwjIYQQQgghhASBjJDTNes2y0tT35P7+oyUa2/oISUvaR4ldsgVV9aT9m0qyaN3l5EXHj1b3nz2NPly/Amy5fVjReb9ly+CuqBOqBvqiLqizldcVS/qeBAcK44Zx45zgHNBCCGEEEIIIdmGL+X0t3375a33F8n9/V6Qqo3uihI2pMpVdaXDTRVlaK/S8tHIf8jO2X+OEsFMC44Bx4JjwrHhGO3jRnBOcG5wjnCuCCGEEEIIISTT8Y2c7v1tv7z2xjxp12WAnFr2uggZO//yhtL+xkoy/KHSsuCFf8iut4+OErtsDY4Vx4xjxzk4r1KDiHODc4VzhnOHc0gIIYQQQgghmUja5XTOvMVya9cnpcTFkUIayqkpT/U4Xz4b+/coYQt6cE5wbnAvq3nOcA5xLnFOCSGEEEIIISSTSIucbv15hzz7wlSp0uDOCLlq1rSajOldSjbN/EuUkDHewbnCOcO5M88lzi3O8bbtO+3TTwghgWDn7l/lm+/WytwFX8jEqXNkwJBXpEffkXJ3ryHSoftT0uau/tKi/aPSuM2DzmPBqjXuJBXqdYj5CDG8hnUw4zq2wbZtOvWX2+4d5JSJsrEP7Av7xL5RB0IIIYQUjmKV042bf5ZHBr4YMWy3au268tyD58rmWf6ZtChTg3OIc1mldt69qjjXOOc494QQkk3s2rNXPv7PVzLxtTkycOgk5xnTEEYI5NmX3xDxB7t0BnVBnVA31BF1RZ1RdxwDIYQQQsIUi5zi4ovHo5gX61turCTvDSsRJVhMcoJzi3NsnnO0Ab8IEUIyEYwCmbvgSxk8epq07zZIKje4I0oC7ZxdoZFUr1NHWjavKl3aXyoDu18gYx8rJZOeOFNmPFVS3h58qsx7/mRZNOZEWTbheFk1+a+ybtr/yLbXj3EeG/b73KOc4P9YhtewztIJxzvbYFuUgbJQJsrGPrAv7BP7Rh3setnBseCYcGw4Ro54IYQQElRSLqfjX31XLqjWxr0I3962ovMoFVummNQE5xrnXM//BdXbOG1CCCF+5cCBg/L+/M/lyeGT5aZOj8ulddtHCR1yxiUhubZRTVc8J/Y/S+YOP0W+feVvvpo4D3VBnVC3if3OcgUWdccx2MeF4Jhx7DgHOBf79x+0TxMhhBCSdaRMTtdt2CrNb33UvdC2alnZ+euyfdFmiic492gDbQ+0zdr1W+xmCyT2l0KGKWyOHDli/zqRBPl82SrnPvlmtzwSNUEegh5ITALXq1NZmTzgDFnx8v9Ffc5lanAsUwacIQ91Kusco1dvK85J03aPyDMjp8ripavs00cIIYRkBSmR0zfmfCLnV73RuaBeVqO+vDrwjKiLMZOeoC3QJmgbtBHaKujYXwIZprChnBaN+YuWSc/+o+Qyj57RBo1qymNdyjh/WFs95a9Rn2XZHhwzjh3noGGjmlLCOj/oWX2g3wvy0adLhb+GhBBCsoWky+nwcTPdiyeey+mnoVVMOGgTtI22E9osyOh5qNP1Y4YpVE4pE+7Zo5zGz/JvfpCHB46Vcle1i5CtK66sJ/d1LC9vPHO67Jz956jPraAH5+TNZ06XHh3LS5Wr6kWcu7JXtpNeT4yRZSu+t083IYQQklEkVU6Hj5vlXiwxa6x9cWX8FbRRnqDOspszMFBOmXhDOY2fl6e9J6G2PSOkChMG9e16kXw+jvMQxJsvxp0g/bteJDXq1Ik4p43b9HRmAubvJiGEkEwkaXI6eeYH7sVxdO9SURdSxp9BW2m7oQ2DCOWUiTeU08Jx4MAhGTZ2hlxS+1b3fXZOhYZy/53l5AtOjJe0YOK7B+8qJ6UrNnTPc/mrbpEho6dxIiVCCCEZRVLkFBPrlKp0vXNBHEMxzbigzdB2/6rYMpCTJFFOmXhDOS2Yp0e+Juflzj2ANGpcQ1554kz5/YM/RX0GMcnJHx/8SSYPOFMaN6nh3qN6XtXWMmjEFP6uxuC0ck3d31GGiSeHDv1u/zoRQpJAUuT0ho59nTdqx7YVoi6WTGakY+7jZtCWQUMvNLaAMEysUE5j88achVKtcSf3fdW8WVV5Z2gJOeLxucOkLnOGlpAWzau6klq10V0y652P+TtrQTllEg3llJDUUGQ5XbFqrfMmPfOSJrLjLU5ikalB26EN0ZZo0yChFxpbQBgmViin0eza/au07zZISlwcfj9d3aCW81xP+7OGKd58OOIUuaZhLVdSb7lnoOzctcduvsCiclr7nvlR73OG8UqJss0op4SkkCLLKWYIxJv0/jvKRV0UmcwK2hBtiTYNEpRTJt5QTiOZ98lSqXT17c45wT2lIx85mz2lPsuo3mfLORXDz0+tWL+DfLhwCR9BQzllEgjllJDUUmQ5bdj6AedN+umYE6MuhkxmBW2ItkSbBgnKKRNvKKd5vDR1jpS4OHw+WjSrKmunHhf12cL4I2unHSctjaG+4199J/C/w5RTJt5QTglJLUWW0zI1b3bepJtnHRt1IWQyK2hDtGXpyq3sZs5qKKdMvKGchhk35W1XTPt2vVCOfBj9ucL4L/27XegOvx47aXagf48pp0y8oZwSklqKLKf6xd6++DGZlz3vHJ3XngGCcsrEG8qpyMzZC1wxfe6BczmMN8MypOe5rqBOe2t+YH+XKadMvKGcEpJakianyyceH3XxYzIraEPKKcMUnKDL6cbNP8sF1cKPiRnaszTFNEMz/KHSjqCeX7W1rN+41W7mQEA5ZeIN5ZSQ1JI0OcVFzr7wMZkVtCHllGEKTtDltG3nJ5zjb9f6cg7lzfC0v7GScw9qm7v6y+HDwft9ppwy8YZySkhqSZqcVqtTJ+qix2RW0IaUU4YpOEGW05Wrf3KG855WNiRbXz8m6nOEyaxse+MYKVku/BixbwL2GDFAOWXiDeWUkNSSNDlFhvVi72mmZpjRa0o5ZZj8E2Q5feTJFx05vff28uw1zZLc17G8M7z3oQFjAvc7TTll4g3llJDUklQ5Rb4Yd0LUhY/xd9BmdjsGCcopE2+CLKeN2zzoHPsno06K+ixhMjOLRp8kp14cch4jFrShvZRTJt5ks5z+89IWUd8HGSbZ2b//oP2rF0HS5LTnXWWdf8tVvUa+eun/oi5+jD+DtkKbmW2IBAk9ZvsCxDCxEmQ5LXtlO+fYN83k48OyJXiMGOT03Mqt5fDhw3aTZzWUUybeUE4ZpmgpNjnFBa7tDVc4/4fsLBnPHlS/B22kYoq2wzK3PQOEHrN9AWKYWAmynJ6a+/iYwx/+KeozhcnM7Hn7aEdOnXalnDJMvgmCnD7zeUgGL2WY5Ob0S9Mgp0jbVmFBRSb0+1fURZDxR9A22k5oM13utmeA0GO2L0AMEyuU0xxZNoGPD8uWLJt4POWUcsoUMpRThkksaZNT5L7by7vLq9epI7+8+eeoiyGTnqAt0CbaPmgr83W3PQOEHrN9AWKYWKGc5sgQPt80a4IJ8TAhEtqVcsow+YdyyjCJJa1yikzod5b72rkVG8qYx0pFrcMUb9AGaAttF7SRvY7bngFCj9m+ADFMrFBOc6TyVXU5W2+WpGrtvD9YUk4ZJv9QThkmsaRdTpFvX/mb3JR7HypydYNaMn1Qyaj1mNQG5xznXtsBbYK2sddD3PYMEHrM9gWIYWKFchp+zzxz/3nsPc3wPPfgeW6vKUI5ZZj8QzllmMTiCznVTH+qpFxeq567bu2rr5IpA86IWo9JbnCOca71vKMN0Bb2embc9gwQesz2BYhhYoVymiczH7/AR8pkavA4IL3XVEM5ZZj8QzllmMTiKznVvNinlDMUTLcpU/laeaxLGVk56a9R6zKJBecS5xTnVs8zzvmLfQo3OZXbngFCj9m+ADFMrFBOc6R3lzJSArdtVGooi0afGPVZwvg7n405Uc6/vEG4Le8uw3tOKadMIUM5ZZjE4ks51bzU/6yIYaZIs6bVZEzvUrJp5l+i1mfyD84Zzh3OoXlOcY5xru3184vbngFCj9m+ADFMrFBOw4+S6XhzRUdQz67QSOaP/EfU5wnjz3z8wj+kdO78Ax1uqui05allOVuv/T5nGK9QThkmsfhaTjX/GXuidLvtEilZrolbDtL0umrywqNny8pJ3vdFMugh/ZtzjnCuzHOHc9mtwyXOubW3KUzc9gwQesz2BYj5WH7YtNc5R+9/vi3qtSCHcpr3nNNOt1zmCCqWcQZf/8ecmffOmy9z25Fymj45/XrNbvH6KFmzaa/0m7hS6naL3iYT8lXuceE46t+7MOr1TA3llGESS0bIqWbvu/8trw38p7RrfXnExAxIxZr1pOttl8jMp0rK+un/E7VtUIJjxznAucA5Mc8RztnNrS53ziHOpb1tPHHbM0DoMdsXIL/lnqHLI+rdd8LKqHWSnQ0/73P29cnXv0S9lmi+/G6nU+a2XQelrsfrmRDKaZ6cIn3uCQ/xxfJb21SS76f8b9RnC5Pe/PDq/0r7NpXcayyG8pqzLVNO0yen67b+ZlfL5cDBw9Jt+Fe+FtTvNvwq+CS0JTTW8kwP5ZRhEktGyakZR1Sf/KfccXMFKVvlGrd8De6l/HeLKtK/24XyxrOnydqpx0WVkenBMeHYcIw4VvP+UQ3ODc4RzlVRhdSM254BQo/ZvgD5LRBEE0ievU6yQzn1DuU0Uk6R158+Xc6/PO9RVQO7X8BHzfgkg3pc4ErpeZUaOn/otNuGcpp+OcXnrUrc+Hd/ksO5Hy+frvhF6vlY7lB/VHWjUf9sDuWUYRJLxsqpnaUTjpchPc+V61tUkYs8JA258IprpWXzqtL3notk1tOnyxfjTpDNs46NKstvQR1RV9QZdccx4Fjs40Nw7DgHOBc4J3ZZyYrbngFCj9m+APktu/eGL4Qqd/jZXifZSYWcZkMop9Fyimyc8Rfp0v5Stxe1Uq16zu0HHOqbnozqfbZcfmXeSJvOt1wqG6Z7z+tAOfWXnJrLTTlt1WexMwx4/8FwO6FndcnqnXJjv8/d7T5evt0ZTjv3i23OZ/euX8PXDlwzRsxcE9ELq+Xtyr2+AEjm8Jk/SD1jvd//OOLs6+X31rvl9X9plezb/4e7XSzMnlMV2RGz1siKH/e4w5nXbN4rbYxjQBYs3+7uy8SR4O7pk2DKKcMklqyRUzs/Tfsfeeu50+SJey+UVi0ry8Uevaua08uGpGLN+tIkVF06tq0gfe65SMY8VkreHnyqLJt4vGx74xj59Z3/lt8/iP6SlWhQFspE2dgH9oV9Yt+oA+qCOqFudn01OCYcG44Rx4pjtveTqrjtGSD0mO0LkJ+CIbwAXy7wZUKZOOeniPW0dxX3iOL/+DIB0EtpDgNGGd+s3eMsV1C2LaG2nOoXIvseVL03VddDvbRs1MHs5cW2ANtozynqpmXoa637LI7Yh59COfWWU81Hz58sDRvXdN9bZateI8/1PFd2zP5z1LpMcrNz9p9lSK9zpVy1vGvjtY1qyrwRJ+f7RwLKqb/kdM7ira64zfp4k9TrttD53N6y40DkAeRibqtyqp//JuYwYZS3OUZ5ACKK/aJMyCkwy4Rg7jtQsJyaPaoqp16Y6y1eucPzPlxAOU0dlFMmlclaOfXKhhl/cSQQw8hw72W9a2tJmSrePZCxgomEzqnY0BFD3NNZo25tp5wmoRpOj2bbVlc4adm8iiOYeA3rYF1sg23tiZ0KCuqIclBn1B3HgGOxj684o3ULEnrM9gXIT9HeUpU8FT8IprmePfTXBF8q8GUE6w2b8YP9sospnracqkBi/7qOLcuxysZys44oG3KK7VV6TbCeX4f9Uk7zl1PNG8+cLk2a1Ij43Luz3WUyb+TJUesyRcv8kSeHJ6cy5m1o1KSGMzLHHsLrFcpp+uXUi2/X7XF7Ted8FhZWfP6qYA6d/oMczv0c0mUqpwC9p9jeXE97YrU8gB5V9JR2GbJcdu455CzDflQWVU7xR0zsB3MgaA9srGG9Xst1mfbCQn514iRwda507t0Xll5dZ/pHG536Y/+6TrpCOWWYxBIoOY2Vg+8fJT++dpwsHHWSvDrwDHn2gfPkvo7lpfX1leWq+lc593LiEQj59WLGG5SFMlE29oF9YZ/YN+qAuqBOqJtdXz9EjyNI6DHbFyA/RYf0au+n9j7iAm+uZ8qpCuXMBZvcZSqI+GKBMszeVBVPSKMus+UU8qmgDLN81AUyqXXQe0q1lzaWnJoyq72l2vNLOfUf8cip5r2hJeTG6yu7w32RmnVrS79uF8oX40+IWp8pXL4cf4I80e1CqVW3dsR1qNX1leXdISXy7Sm1Qzn1n5zGGuYbCx2yq3Jqb6+9pLpcy7MnLDKlVXsoVU7N3lSzXraExlquyyDIumzI9O/lcO4NtvfmCrYtp+/m1gnXGcpp6qCcMqkM5TTOHJp7lOx++2jZ+vqxsnbacc6jWpZMOEE+HX2SfDjiFJn93KlO8H8sw2tYB+tiG2yLMuxyMy1uewYIPWb7AuSXqBCa95iaM/eaQ3tN8TPLUCCSZrkqnyb5ySmivZx2b6r24poyjO1jDT1WOTWPBceI7bWH16+hnMYnp5ofpx4nT3a/wLm1wZSpKlfVld5dyjjDgRMpNyjBuZn//MnSp0sZqXpV3YhzWKFmfRlw7wWy5rXEJgmknKZfTlUaY02GVJCc4h7Q/OTU3o/+bE+4NMToZbXlFEN5zXtRtVxbQmMtL0hOw+UvjDmsF/fXmvtIRyinDJNYKKdMQnHbM0DoMdsXIL8E0pcf5tDeguTUqzfVpiA5NSdkglzq9wdTQnUdBb2o2tNqy6nWx7yXCf/XnlY/hnKamJyagYg+eEc5ubTa1RGS9c/yTZxZyvE8TvQMZsMf/RINjh3nYPhDpeWGFlXkjPKRt45cUu1quf+OcjLv+fzvJy1MKKf+kVMs02ef4rNQJwrS9cyhvl6JJafac6o9pYn0nBaXnOp65twFfhBThHLKMImFcsokFLc9A4Qes30B8ku8JrWw0Z7GwsqpSid6PfPb1ktOdXImXQ50SK+5T8goXtf6q0R7ySmCekBSdQizI78+fbYf5bTocmoGtzug57TuNVdGyJem9tVXOrMAj+59tiwac6L8lsTHZ/klOCYcG44Rx1rnau9zgXP0aJcy8vGok4ospGYop/6S0z7jV7rCpveNfp7bm4jPVB3Ci8/NGfM3ObPa6rZe95xOn78xapmWB7zuOTWltTByqveoogzULVE57TpsufyR+3Ob/pEz+Poh6ZDTKbM+LJb3JuWUSWUop0xCcdszQOgx2xcgP8S8x9Me6mpKog7X9RJMRPGSU/wMkdS/UBckp4g5yy+we28Rra/2/KqM2nKKHlLUw76HFVBOC2byjLlu73VxkAo5NYPbJKYN+qfc0/5SqVUv8l5KM9Xr1HGe9YxexbnDT5FvX/mbc3uFXZ7fsuvto526os6oO44Bx2IfnwbnAOdi6qB/ypbXU/eINMqpv+QU0Z5O/KFOpS/Wo1sgrF5yamP2xBZUng4Txrr5yanZ0wpURhOVU7Pn1ATn4du1e6IeOVPcSYecPvX8FBk54Q35I8XvT8opk8pQTpmE4ranj5g0Y669KKnoMdsXID9E7+dUibSjvYz6emHlVNfzojByqhMyKV73vdp4CbQ9IZIJpNbujfVL/CSnTw6f7HxpKa6qpFpO7ex/7//JZy/+XcY+Vkq63naJ1Lv2Sjn14tiT2GFCOsgeZlmH1A287wJ5qf9ZrsBuf/MY2fvufye1/igLZaJsFU/sE7OwoxcUdUGdUDe7vhocE44Nx4hj/Wzs351jt/eVqvhRTifP/CDl7zE/yOnqDb86ImYPrzV7O1UU0aOK54OazzmFsHUbFp5ICNuZw3o//foX2X8gvC5+7j8xTzgRCOrXP0Y+NxX1sNdTOTWFVYM/RH6XewxAxVOXeT3nVHtvsQzHpD2lj7+0Slr3XSy/xZBmgGHN6Rzemy45xe/qsLEzUyqolFMmlaGcMgnFbU8fMXDYJOfLd6rQY7YvQH6IYk5kZMa8txM/q/jZMqtDa83HxGBbXY6eUBVOLzm1n2uKLyO6rT2kV2fn1dft56eaddTtsExFG9the7un2E/xm5yWuPg6GTFuVrEIanHLqVewbzxHGgKIey4LI39ewf2t51Zs6DyHtVKt8CPE6juPEKsu1zevkvsIscud/2NZ/Qa1nFmGsS62wbYowy43v5jyjLrjGJZNOD6t5xPxo5zm/eEldb/YfpDTZCfWPaeZEu2JxTVBZ+81n8kaxOecqpxiv6kUVMopk8pQTpmE4ranj4Ccok7Pj3/dfikp6DHbFyAm/+zKlUl99mqQ4kc5RX2KQ1D9IKf5xRw2O7FfXu9li2ZVpVqdOnLhFddKqcsauTKWjKAslImysQ/sC/vEvlEH7bVF3ez6+iV+lVP8bg93fq9T84tNOfVf9JmmsXAeL5PG40q3nCKpElTKKZPKUE6ZhOK2p49QOUVSIahatn0BYmLHvC/UfFZqUOJXOUVSLah+l9N4gudNQxi3zDpW1k49Tr7FI8TGhx8h9oHzCLHTnOD/ziPExp/grIN1sQ229eszq+ONn+UU9Rr+YmoENRvlVHse7WHCmRQI6tadkV9g12zeKy+991NaxRRJp5yeU6uLe/1JhaBmi5y+tvoBOXwkun32/75Hftz9mQxd1ixqGyb1oZwyCcVtTx9hyimSbEHVcu0LEBM7OtzXvrc1KPGjnJ5T6x73dzmVgppNcsrkxe9yiqRCULNRTpnUJp1yenHjgVK+6XNS4uLUDPHNFjmdt36kHD4S+77l9b8u97Wgzv5xoCvX7657VoYsuy5qnUwM5ZRJKG57+giVU/PLdzIFVcu0L0AMEyt+lNOyTZ50vrSY75FUVI9ymp3xs5yan/3JFlTKKRNvCiunnyz+WhZ+9lVS0uWhoXJq2bCc1r5ngZRvNjglgpqNcrpg41hH7tCbunXf93Ikd+quYcuaR23nl3xo1X8o5TQ+9IJhX+iYzIzbnj5C5dTry3cy0PLsCxDDxEpR5dT+4lGU3N1zsJTIfX+gbvZ7JMEqxoRymp3xs5yWbRLuLTrFvbcav9fJ+cWmnDLxprByWvKS5u5ncbKicop6pEJQs1lO7eWmnC7a/IrsOYhJIcOfK78e+kUWbBwT0WP5x5FD8vvhA/LuumciJBe9sOO/vV0GL82JKG/HgQ1ueRhObK/3/a6FckQOy4+7F8vm31Y65W3fv1ZW7fhIjhyJbstskFTKKZNQ3PYsIvYX6KKkc8/BTp1iffkuKlqWfQFimFgpqpyaQxWTFX1/IPZ7JMFqekI5zc4kS06T2Vt0d68hrpzW6bpAyjcdnHRBpZwy8SZeOS1VvZOUqt45KcF7QeUUSbagZrOcoud098GtjjBCFlVOl2zDZ4n3eTPFFnIKIKg2EM9hucOE8ysP0qv7VTk1y9t1YDPlNCvldEn1yAquaFnwOsqB9SI73g+/bm+jObQ9b/0tE6NfR1COgvVjlbd3Wd56h3+Lfj0NcduziGg5yUx+X76LgpZjX4AYJlaSJaf2F4+ixHx/IPZ7JMGqRkE5zc4kS05PK5s3o2iyonIa/r1OrqBSTpl4E6+c1u7yUVQZyUwyBTUb5dRGez+HLA2L3oE/fnWWr9o5X4YuayovfnOrbN232unJ3PLbd650qpxCMKd//7C8+M1t7npApVPLQy/o+G87Oj2lKqLg861Tnf2Yy9B7intgIdBDluZwWK+9IF704mFf6NKW7bMiKwjZtNdZ3TlyHRuI4trHCt4OEmqvg9h41QHSbGOvk4a47VlEtBz7C3RRUtCX70TRMuwPfIaJlWTJqX7hTlXs90iC1Y2AcpqdSbac2p/fRUn4s9/oLUqioFJOmXjjNzlFLkmSoAZBTmMN8/Vi54HNrnSqnJrbY/iuKZEfbRjl/mxPZKTSqiKqcmr2pmoop0VEv/jYF7q0RXs2IYQAP9vrmJKJ/2PZojNFNgwJiynAv1hmbrf708iygVevqKJledVByzJ7We110hC3PYuIlmN/gCY79pfvRCiuujLZk0yRU8R+jyRYZRfKaXYm2XJqDj1MRZIlqJRTJt74UU6RZAhqNsop5G7cNx3kl/0/OUN60XM6IbdHsyA5Re+n3XMaS25tObWFc/v+dU4vqy2nGMprr0s5LSL6pce+0KUl2hsJGYRYKnYvqJecer1mD9tV2YSQqlR69YoqpsSa+0HdtCzsQ7HLSUPc9iwiWo794ZmK2F++46U468pkRzJJThH7PZJgtR0op9mZTJNTJBmCSjll4o1f5RQpqqBmq5zqPaf6eBYVRHO9Gd8/7AyptcvSeMmp2XOKntJEek4pp9Fkl5yqDKowqkCil9JcLz85Nbfb913eMggu0KG8+fXMKhhirPeVmnVAD61ua9bFLicNcduziGg59gdnqmJ/+Y6H4q4rk/nJNDlF7PdIglWnnGZpMlFOkaIKKuWUiTd+llPk3No93PcEHr0Uj6Bms5xi+Zbce0TRewohxP2lKp24v1TvEZ29dqAzIy8mJ8L9odjW657TXQe3uL2xdnmx7jlVaS2snOIe1XHfdpAXv2kfMSNwJiaYcqpDenUSJO2VtCcbKkhOIaXAlFMdhqu9qeY9o/akSwrkVEXUHCas5aMsymnSYn/5LizpqCuT2clEOUVKX3VfxHskkepTTrMzmSqnSFEElXLKxBs/y6nZcxqvmIJsl1Ozp3P59rcd8Vy75wt3UiMbnSQJ26p0eqG9oVgvv/LMCZbyk1NEe1qVbOhBDZ6cas+m2ZNpzsprDu2NV07NIcLmPabm/a3m9grk1NwWomrWCf+nnCY1pa/q7u575IQ37Gp5kq66MpmbTJRT8483I8bNSkhMAeU0O5PJcoqUrp33h5d4BJVyysQbv8ppUcUUZIucouczb3ht3sy8yN5DvzjLzftJv/llruw59HPEc06X/xyWV91O5RTCuuPARrfH9Mfdn7liqsHjZPYcinxuqr2eymm4HtFyijL2HdrlbI9H36C3Nr9hx5mQ4Mmp9mzGwhxWW5Cc6rBeDMnFz9r7GQt7aK8COTXrhvJ0NmEVX8pp0sKeU6a4kmlymiwxBRkjp84Xg1y2vCQyz6rvkmoY0mIeWhh8nm9/XWTeUXnrbhjsfsmIAJ/jGAGz6Kzo/a9oIbJ3ad66XuX6KJksp+w5ZYozfpTTZIgpyBY5TUW87jll4kvw5FQnGMoPHVabn5x6TYhkPo80FmbPrKJyqr26QHtbIbz2/uxjSkPc9iwiWo79AZqqJCqmoLjrymR+MklOkymmICPkdHWnSJl05gqwpNBex2bH3Lxtts/If13nedY18wQYYuolvmD13dGi7INkqpwWRUwB5ZSJN36TU/M5p0URU0A5jR3KadETLDk15c9+/It5b6iXEKqcxnqUTH6z/iK6vtkzq6icmuspXqJsl52GuO1ZRLQc+0M0FSmKmILirCuTHckUOU22mIKMkNPdC8OVhWCqVJryiJhyqsKI3lSzt/MjDznVZVh3+8y85ehF1df2LgkvM6UV+9u3inKaxBRVTAHllIk38cppqeqdop7dm2jKNhkY8d5KppgCymns6D2gzoRGxjBhpvAJlpxqz6YOw7WjvZX6uimEXkAkC5pUSaNDds3XFVNOzWHHsYYY22WnIW57FhEtx/5QT3aKKqaguOoabybOwTO5Ijlw8LD8sGmv9J2wMmp9pviSLDm1v3gUJWWbPBlRx1SIKcgIOdWJJCCGB3LfR2ZPKOIlp/by/ORUY7624t/hcn5bGf4ZPbb2+j5NpslpMsQUUE6ZeBOvnCYzFzfOk9NkiymgnDKpTLDkVNGeUTvm80bxszkpkQm+SGBdc9IjnRzJfhyNxuy11V5Y7SU16+PVW4uYPbt22WmI255FRMuxv0AXJfl9+U5UTIGWYV+A0p1Pvg7ftO8FJJWCmr4kS06TGfP9kSoxBb6X07W9w7KoQ3l3zAn/7MwNUICcojdUZRbrF0ZOndE1uV8K9Z5S3SfANcSnvaVmki2n9ud3URL+3TZ6i5IkpoByysSbwsrpJ4u/loWffZWU3N1riJxatqkrp6kQU0A5ZVKZYMkpk7S47VlEtJxkJtaX76KIKdBy7AtQumPKqS57//O8SV6+WbsnahumeFJUObW/eBQlnR98TkoY749UiinwvZzqkF6dBMm5/1N7Nq/37iG1cUbPGOvmJ6fIEUtOIawH1kUU6cju2j6+ldRky2kyg6GMKqfJFFNAOWXiTWHlNJk89fwU53cVcorP+FSIKaCcMqkM5ZRJKG57FhH7C3RR0unB8Jdtry/fRRVToGXZF6B0x0tOkQ0/73OW4V/8PGzGD87PGO6LbdCriuj66GHFa1gGdGjwPUOXR5SLYcTbdnl/YNTNZz94DduiProPXc/s3TW3x/q794Yv7Ph35oJNTn0g3MqX3+10yrbPix9SVDlNJk8On+z0xOL9kWoxBb6WU7MX07zHVGfuNYf25iendk9nvHJqbuc8nsDAp4KaLDlNZm9R557oHcLvdlhOky2mgHLKxJt0yuk5Nbu4159kiymgnDKpDOWUSShue/qIgcMmOXWyv3wnQ0yBlmdfgNKdWHKqAmnLqSmGug3k0F6uYLkKqtf9rSamnNrl4TUVZhuVV7OesbDLBTgHfhRUP8rpOTXvcX+XUyWmwNdyGuuRL4o5tNce1ovHwezLvVfUmRDvX3nl5ienphA7vbUe8op6Hd4bXsen96EmS06TSd4fXsK9RckWU0A5ZeJNOuVUP+NTIaaAcsqkMpRTJqG47ekjVE7NL9/JElOgZdoXoHTHS07NYb14HctM6UOvZKs+i13pxM8AvZO6zFwfvZPmevoz1lW8trP3g55PCC6W4WdIsYLt7O3RQ4p1zfUgp1gHy9cbvcOU0/zRL/D6e5xKMQW+llOdJTc/tOfSllO959S+fxTl5ienXhMi2fWy17PL8EH8LKeRf3hJnpgCyikTb9Itp6kSU0A5ZVIZyimTUNz29BEqp5pkiinQcu0LULqT34RI6D1VETSlT5dpFEituVxlVHtfbTk1pVGH5ua3H/wM4dShuiZecmoKp37NNHtJF+YeO8qr2y363KQ7fpXTVIsp8K2cmj2YXkNndQZfZ3K7o7zlFOup4KL3NL8JkfJ7lMzBbWG5XVLDmGgp9x5UZ9Z4ymlhiP7DS3LFFFBOmXiTTjlNpZgCyimTylBOmYTitqePMOU02WIKtGz7ApTueMkpZA0CacqhKX12GYoKol22ymmsYb2QYK/92L2ZuzykVCmKnDrrUk7zRb/AF4eYAt/K6ZYJYVE0pdKMTpSkr8eSU53tF2wYGl5uyqkXGKprDgNWEbaxJ1ryUfwup6kQU0A5ZeJNuuR05IQ3UiqmgHLKpDKUUyah+FlOUyGmIBPk1H7NTGHktKCeU92XOSGSDt312o8pl+ZyU4L1ayTlNLXgCzy+tBRXVXwrp3q/qPaM2q+b0gkZdR7jlfuzLYzo+QTayxnrXlb0luJZ2Lhf1dwXxHfv0rzHiuFf1Mvej4/iZzkdMT41Ygoop0y8SYecTpn1YbG8NymnTCpDOWUSil/lFF++U0U2y6nKZqx7TlVadTguelDtMrz2E0tOdQiweW8s5TS1TJ4x10ubUoZv5ZQpUvwqp+E/vKTuN5xyysSbdMhpcUE5ZVIZyimTUPwop5NmzLUXJZVsltNYw3WBed+q1xBifeSM1z2nplyiDK+ZdhXKaXZBOc3O+FFOJ8/8IOXvMcopE28opwyTWCinTELxo5ymGr/KqfY+ms8s9YpKX6z18LoO4wXoJdXZcnWdWI+CAc6kRNZ+7HtOIbDaS4vXcV+slmnLqb39/lyxNYcem8dOOfUXlNPsjB/ltDjwq5yOf/cnOWx9vOgfDPtPXOnLz8WghHLKMImFcsokFMpp8OL12BcEAqvYMhr0UE4pp9kWyqm/5PTj5dtj3kcOSe0/cRUFNU2hnDJMYqGcMgmFchq8mM809UIfL8PkhXJKOc22UE79K6f1713oLJvz2VZ32bfr9ki93OVM8YZyyjCJhXLKJBTKaTBjD/0FGKZrz/LLhEM5pZxmWyin/pdTZN3W8AzQuG0Cy4dO/0EOHzkiazbtde7b33/gsNOzqtv0Gb9SVm/c684LoEODuw37KqLndfy762TrTu8vjPW7L5Qh2M9hj/10X+hsu37bvoi5B7Ce2bs7ZPr34e0375WX3vtJdv56yFkPt43M+niTdB22XL5es9s95iWrd0Yct59COWWYxEI5ZRIK5ZRhCg7llHKabaGcZoacbt5xwFlmy6k9KR1eg5ju2/9HxHIF63cbHhZUyCXKiIUpp/Z+ru6+0BFmr62xLl5HvVVOY2GXCz5d8YsvBZVyyjCJhXLKJBTKKcMUHMop5TTbQjn1v5yaw3ohbhjWq3IK0Ft5Y7/PnVs1IJ3fbfjVkUb0TqqImuujdxJl6HraW9llyHL5I1ck783dTuXUaz/TP9rozAzfum94kj1Isa47YtYaqedsnyenGJKM7c31IKdYF2Wo7G7MFXD73KQ7lFOGSSyUUyahUE4ZpuBQTimn2RbKqX/l1Aa3XEDusJ4pm21yl2lUMOd+sS3i/lSVUe19teXUlMb+L4WH5ppyau8HM79jSO6u3Odlm3jJqfamIr//EV5m9pIuyD12SLW5rl9COWWYxEI5NbP7U7vaIod/E9m7TGTDkOj1AxzKKcMUHMop5TTbQjn1v5xC1pZ8t1Nu7Jsnh6ac2r2MKqcjZq6JuL9Uy1Y5jTWsFxKsZZpyagvjjj3h+0e9KIqc2uv6JZRThkkslFMz+76zqx0JXre3KUwguGDLxOjXMjSUU4YpOJRTymm2hXLqXzm1pdNMYeS0oJ5T3Zc+qxro0F3dJpacmstVRLFcpZNymllQTplUhnJqRuXUlNAVLcM9p8r2WdHbFZSibOvTUE4ZpuBQTimn2RbKafbJqU6eFOueU5VW7fl8+b31Uq+b974KI6c6BNi8N5ZymllQTplUhnJqxktO7dfQC6rL1j4WXq49owAiC6HF6/jXC5VU/Gv21qIcDC1edGb0/n0WyinDFBzKKeU020I5zT45jTVcF6CXVO8d9RpCjAmKzMfBxJJT3G/6W4wZgQHlNLOgnDKpDOXUTH5yChFVVneOXN9GBbYgOY0FBNfev89COWWYgkM5pZxmWyin/pLTOYvDvY/mM0u9Yj5Kxms9vP79xr3uo17Qi/rN2vBsubpOrEfBAKyPcs1HyeDRMuY+MIHSltxeWryOiZUwZBhl2nJqPl4G2bsvLLbm0GPtebXX9UsopwyTWCinZvKTUwiponKKSZIgrdrTacqoroMo9rBe/Gyuh3tSFXv/PgvllGEKDuWUcpptoZz6S06LKxGPfZmZd8/oV2t25/Xc+lAQ0xnKKcMkFsqpmXjlFFKKYbiHtue9Zq+DKLac6v2s5rBgxd6/z0I5ZZiCQzmlnGZbKKfBlFPzmaZe6ONl7O2CHMopwyQWyqmZ/OTUHNar95R6SalSkJwuqW6uHY29f5+FcsowBYdymgY53TBYxGvwIT7XMTpl0VnR2zCFDuU0mHKK2EN/Ae5JtWf5ZcKhnDJMYqGcmslPTu0Jkbx6UpH8lplyiv8DCC5E1S7T3r/PQjllmIJDOU2DnG6f6S2nivOZW0NkXpz1+uPX8PZbXop/22Qlog5HRb9eDKGcBldOmfhCOWWYxEI5NeMlp7EeJWOKpPakmveMesnpjvfDP0NGTTnF8GAdIqzYdfNZKKcMU3Aop2mWUxU45zPXWO58xscpd0dyZWz76/Fvm6z4oA6UU8opU7hQThkmsVBOzcSafVeBPOq6kEmve0UVU05NuQU6EVJ+2HXzWSinDFNwKKc+kVOv11ZcH+4BXdFCZO/SyNs0DqwXWdsn73WvnlgVxLW9Rfat8nikWG757r5niBz6Ofw69rVhaOTrKOfAT3lloA6r7zbq4CGDaZBUyinllClcKKcMk1gop2bMnksFXzjwRQMz89rro8cUXyB0PfSMquCacmqvh/tXsRxl6hci/IueV/2CY+/LZ6GcMkzBoZz6TE7xR0WVPEfs/pT/MGAIpjMLu8frKob7VtqvhMFn+Ue5+4eYepWhr8e6TxZAUJ06eMgg5bTYoJwy8YZyyjCJhXLKJBTKKcMUHMqpz+QUseV0dafwHwr1PlQI7KFtketgu1hDaiGWziPFcidaMntatedTBXbH3PC2S6qJHFiXJ6f2vaSow94l4WW7F+XtL1YdijGUU8opU7hQThkmsVBOmYRCOWWYgkM5zQA51W10dItJYeTUmS/gE+/Z21VOdy/MW4YROuaQX8hxrF5TgNE4KrGx6lCMoZxSTpnChXLKMImFcsokFMopwxQcyqnP5NQc1quz7priaFMYOT2Y28vqhcop9msP/8XtIiinIDnV9fKrQzGGcko5ZQoXyinDJBbKKZNQKKcMU3Aopz6TU68JkSKEL7euKpIFyakpliqi5rrmMgRDftHLqttgUiRncrzcn5fUjFzfjlcdijmUU8opU7hQThkmsVBOmYRCOWWYgkM59Ymc5vcoGRU+7UmFcB7eG17mJafmfaOmWKrsbpkQLay4f1Rn50UvKu431fJxr6qWjftLF/0rvD+dRRgT5dl1NeuQn8ymIJRTyilTuFBOGSYyz34ZkkGLQvLE/JD0eT8kj74Tkkdmh+ShN0PS6/WQPDgzJA9MD8lpl1BOmQRCOWWYgkM5TbOceoF7S1UAEXu4rYkppzpBkfkaxPJw7mRGXtgTItloT+mOObHrrJMkxapDMfegUk4pp0zhQjllsjFo874fhOSBGSG5e3xIbh0Skhv6haRJjxy5ulOOXHlLjlT+d45c2iRHLqybI2dXy5EzKubIaeXD36HjCeWUiStuewYIPWb7AsQwsUI5TYOcxnosC3pL0Qups+pqnJlxl+ath3s88VgwlGHKKXoy9TmkziPBjOegmsvRq+k+Usx4Tqm5D/M5qlqPLeOjn3NqPwvV3pddRjGEcko5ZQoXyimTiUGb9n43JF1fDkm7Z0PStFeO1OmQIxWb5kjpmjlyysXRElnYnFa2qZSq9G+5sPpNcmnd9lK5wR1StdFdUiPUWa68rovUad5V6rW811l2bav75eDBQ/avXgSUUyYibnsGCD1m+wLEMLFCOU2DnDIpDeWUcsoULpRTxs95/KOQdH0lJDcOCDk9noWVz1PLXiflrmwntZt1lZa39ZY7ejwrDw8YK4NHT5Pxr74rM97+WOYu+FIWL10pq35YL5u3/iK7f/0tJe8DyikTEbc9A4Qes30BYphYoZxSTrMtlFPKKVO4UE4ZP+TpxeEhuLcODkmT+8JDbs+pHltCIZ8V63eQnJt7Seeeg+XJ4ZNl8oy5svCzr2Td+i2++j5DOWUi4rZngNBjti9ADBMrlFPKabaFcko5ZQoXyimTjjw2JyQdRoSkYbfwfZ8lYkjouZVbS6MbH5DuvUfImJffcuTzpw1bM+r7CuWUiYjbngFCj9m+ADFMrFBOKafZFsop5ZQpXCinTKqD2W+7Tw5PSFTz5hw5p4Z3j2itnLvl9u5PybMvvCbvfPAfWbt+c1Z8LymynJapebNzgjbPOjbqYsdkVtCGaMsyNdvazZzVUE6ZeEM5pZxmWyinlFOmcKGcMqlIj9dCcv1jIWd4rtcMuBfVaCs33tlfnhn5msz/dLns/W2/3XxZQ5HltGHrB5yT9umYE6MudkxmBW2ItkSbBgnKKRNvKKeU02wL5ZRyyhQulFMmGcGzP1s/HpLqbcKPZLFlFBMTdX/seZk860P5bs2GQH3fKLKc9npijHMS77+jXNTFjsmsoA3RlmjTIEE5ZeIN5ZRymm2hnFJOmcKFcsokkn7zQnLbsJDU7eg9cVH1Jp0cGZ359seybfsuCeDXC5ciy+mKVWudk3rmJU1kx1t/jrrgMZkRtN0Z5Rs7bYk2DRKUUybeUE4pp9kWyinllClcKKdMYYNHulz3YI5c0jh6AqMK9W+Tu3sNlckzP5D1G7cF8vtELIosp+CGjn2dE92xbcWoCx6TGenYtoLThmjLoEE5ZeIN5ZRymm2hnFJOmcKFcsrEysNvhaTNwJBUvylH/nlZpIyecWkL5zv28+NfdzqBgvj9obAkRU7Xrt8i/6rY0jn5Y3qXirroMf4O2gxtV6piS6ctgwbllIk3lFPKabaFcko5ZQoXyimjeWJBSDqODMk1nXPk/Kuie0drN71HHnlynMxd8KX8/nuwPluLQlLkFKBbWhtjNAU1Y4K20nZDGwYRyikTbyinlNNsC+WUcsoULkGQ03INc6T+XTly06CQ9Jgaoqzm5vGPQnLHqJA0ujd8jmwZLXtlO7mjx7Myafpc2bB5eyC/IySDpMkpGD5ulttAzz14btTFj/FX0EbaXmi7oEI5ZeJNkOUUF18c+6aZfHxYtgSPETv14pBcXOtmyinDFJBsltM6zbtJidw/QNop2yDHmcwHz968e3xI+s6NlrdsS+93wz2jDbuGj9+W0ZLlm0mzWx6RwaOmy5KvVgfyO0EqSKqcguHjZrqN1v7GSrLr7aOjLoRMeoM2QdtoO6HNgoyeB/sCxDCxEmQ5bdzmQefYPxl1UtRnC5OZWTT6JEdO8Rixw4eD9TtNOWXiTTbLKfht3wH5z5ffyKiX3pTOvYbIldfdE1NYz7oiRyo0zZFr7s5xHovS+cWQPPp2SAYviRY9v6f3nLCI5jyQ4zxr9F+Vo4/3jMtaOjL65PAp8vF/vuJQ3RSRdDkFb8z5RM6veqPTkJfVqC+vDjwj6mLIpCdoC7QJ2ua8Kq2dtgo6+qFjX4AYJlaCLKePPPmi80Xl3tvLy5EPoz9jmMxLj47lnR6BhwaMCdzvNOWUiTfZLqde7Nt/QD5bslLGv/quPNBvlFzX7mG5sHrbKHnTlCibIxfWyZFqrXPk2i458u8+IekwPCT3TQlJ3/fTJ6/9PwrJfa+FH+nS/OEcqXN7jlyW4y2iSLkr20nrO/vJ0yNfk4WLvw7cH+/SRUrkFGBinea3Puo2cKuWlWXGUyWjLopM8QTnHm2g7YG2Wbdhq91sgUTPiX0BYphYCbKcrlz9kyOnp5UNydbXj4n6rGEyK9veOEZKlmvi/D5/E7DHiAHKKRNvgiinsdi87Rf5cOESeWHim3J/vxek5W29peLVt8fsaTWDXtfza+fIJU1ypEqrHKl9W4406JojzR7OkRsHhAWy87iQ3PNSSO55OSRdkVdC0g2ZFM69k8PBOuj1bPt0SK5/LCShHuF7ZmvenCOVWoSH5J5RKboOZnDLSqs7+sqAIa/I7LmLZOPmnwN5jfcDKZNTBX9luaB6G7fxb29bUb4cf0LUBZJJTXCucc71/KMt0CYkDz039gWIYWIlyHIK2nZ+wjn+dq0vZ+9phge3eJQokyNt7uofyF4ByikTbyinBXPgwCH5dvU6mT33P87w4N6Dxkv7boPk2hvul3JX3RJ172Zx5bxqbaT+9d2lQ/en5PHBL8ukGe/LJ59/LZu2cPIiP5FyOQW79ux1hgGYvyC33FhJ3htWIupCySQnOLc4x+Y5RxugLUgk9ocXwxQ2Qb2Y4S/KF1Rt7ZyDoT1LyxGPzyDG/xn+UGnnS+L5VVrJ+o3BHElDOWXiDeW06ODauWPnHvlh7Sb5Yvl38v78z+W1N+Y5IvvksMnyYP9RckePZ+Tft/eRFu0flea3PuLc69ns1kek6S0Py3XtHpKcmx+SUNte0uSmns7rt3Z9Uu59dLj0fWaiDB0zXSa+NkfenPOpLFi0XJZ/s8bZH8kMikVOFXyheWTgi3Jq2bzu/iq16zqzxmK2QPvCycQXnEOcy6q167rnF+ca5xznnnhjCwfDFDZBlVMwc/YCd+jWcw+cS0HNsAzpea7bezHtrfmB/V2mnDLxhnJKSGopVjlVtv68Q559YapUaXBnxBe9Zk2ryZjepWTTzL9EXUgZ7+Bc4Zzh3JnnEucW53jb9p326SeEkKQwbsrbrqD27Xohh/hmSPp3u9AV07GTZgdWTAHllIk3lFNCUkta5NRkzrzFTle8ffN0KFRdnupxvnw29u9RF9agB+cE5wbnyDxnOIc4lzinhBBSHEyc+q77+d2iWVVZO/W4qM8sxh9ZN+04adm8qnOPKdprwqvvBlpMAeWUiTeUU0JSS9rlVNn7235nvHm7LgMihv0i51Vq4EzagPtjFrzwj0A9OxXHimPGseMcnHd5g4hzg3OFc4Zzh3NICCHFzbxPlsrl19zufCadU6GhjHzkbA7z9VlGPXq2lK7YyGmjSld3cGbYDLiXOlBOmXhDOSUktfhGTk1+27df3np/kTMtddVGd0XImKbKVXWlw00VZWiv0vLRyH/Iztl/jroYZ1pwDDgWHBOODcdoHzeCc4Jzg3OEc0UIIelm1+5fndkYdbjo1Q1qydzhp0R9zjHFmw9HnCLXNKzl9pbecs9A2bmLE4MoKqcME28op4SkBl/Kqc2adZvlpanvyX19Rsq1N/SQf17SPOpDArniyrrSvk0lefTuMvLCo2fLm8+e5jxKZcvr/plsCXVBnVA31BF1RZ1Rd/t4EBwrjhnHjnOAc0EIIX7ljTkLpVrjTu5nWPNmVeWdoSXYk1rMmTO0hLQwhvDij5qz3vk48MN4bSinTKKhnBKSGjJCTr346ts18sr0953HozRs/YCcWaFl1AeHGTxkvFKtes59mnfcXEH6dr1IRvcuJS8/fqZMH1RSZj93qnw44mT5dPRJsnTCCbJy0t+c+3O2vn6s7HnnaDk09ygn+D+W4TWsg3U/HX2isy3KQFkoE2X363qRs69QTnVn3/qg81jBMeBYcEw4NhwjIYRkIk+PfE3OqxJ+3AzSqHENeeWJM+X3D/4UJVJMcvLHB3+SyQPOlMZNarhSem7lVjJoxBRKKSGEkIwgY+XUixWr1jpT4g8ZPd0RvJs6PS51mneTC6vfFCWC6Qrqgjqhbqgj6oo6o+6EEJJN4EHsw8bOlPK1b3U/A3FP6v13lpMvxp8QJVdMYsFonAfvKielKzZ0zzMedI/ry/79B+1mIYQQQnxLVslpfuw/cNB52C8exjtl5gfy9POvOnLY5aGhcvt9Tzuy2PK23s7DfOu2uFeqN+ksFevfLmVq3iznXNFKSpZv7gT/xzK8hnXqtewuTdr0dLZt2/kJpyyUibKxD+wL+8S+UQdCCAkiL097z/l8Nf9YV71OHWcUy+fjKKrx5otxJ0j/rhdJjTp1Is5p4zY9nYfPs6eUEEJIJhIYOSWEEJJ+ln/zgzw8cKyUu7JthFThvvv7OpaXN545PSsmuEt2cE7efOZ06dGxvFS25igoW6ut9HpijCxb8b19ugkhhJCMgnJKCCEkLcxftEx69h8lFeq2j5AtpEGjmvJYlzIy46mSsnrKX6NkLduDY8ax4xw0bFTTvYdUc1nd9vJAvxfko0+X8pEwhBBCsgbKKSGEkLTz+bJV8uwLU6XZLY9IiYsjn3WNnFOhkTOh3UOdysqUAWfIipf/L0roMjU4lskDzpBenco6x4hjtY8f56Rpu0fkmZFTZfHSVfbpI4QQQrICyikhhBBfceDAQXl//ufy5PDJznwA6CW0ZQ05o3wTubZRTenS/lIZ2P0CmdjvLOfZqt++8jfZ9fbRURKYrqAuqBPqNrH/WU5dUWfUHcdgHxeCY8ax4xzgXHBiI0IIIUGAckoIIcT3bNu+U+Yu+FIGj54m7bsNksoN7ogSOjtnV2jkTLrUsnlVV2DHPlZKJj1xpjNk9u3Bp8q850+WRWNOlKUTjpdVk/8q66b9j2x7/RjnsWG/zz3KCf6PZXgN6yybcLyzDbZFGSgLZaJsFU/sE/tGHex62cGx4JhwbDhGHCshhBASRCinhBBCMpJde/bKx//5ypmdduDQSc5M6S3aPyrVGneSsy+/IUoC0xXUBXVC3VBH1BV1Rt1xDIQQQggJQzklhBCSlezc/at8891ambvgC5k4dY4MGPKK9Og7Uu7uNURuu3eQtOnU3xHGxm0edJ4/DYGsUK9DzEeI4TWsg8eNYRts2+au/tKh+1NOmSgb+8C+sE/sG3UghBBCSOGgnBJCCCGEEEIISTuUU0IIIYQQQgghaYdySgghhBBCCCEk7VBOCSGEEEIIIYSkHcopIYQQQgghhJC0QzklhBBCCCGEEJJ2KKeEEEIIIYQQQtIO5ZQQQgghhBBCSNqhnBJCCCGEEEIISTuUU0IIIYQQQgghaYdySgghhBBCCCEk7fx/dUgrf9sVm/IAAAAASUVORK5CYII=" alt="ARDS in Serial Diagram" /></p>
+<p>First, we’ll create a program to perform the analysis. Note the
+following about the program below:</p>
+<ul>
+<li>The same data from <a href="ards-example1.html">Example 1</a> is
+used here.</li>
+<li>The <code>init_ards()</code> function is called again at the top of
+the program. This call will prepare the bucket in which the analysis is
+dumped.</li>
+<li>The analysis is performed, and <code>add_ards()</code> is called to
+add the analysis to the ARDS.</li>
+<li>This time, however, the additional steps for formatting and
+combining the data are skipped. Instead, the ARDS data is simply
+extracted and stored.</li>
+</ul>
+<p>Observe:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(ards)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co"># Create input data</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">text =</span> <span class="st">&#39;</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="st">STUDYID DOMAIN  USUBJID SUBJID  SITEID  BRTHDTC AGE AGEU    SEX RACE    ARMCD   ARM</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="st">ABC DM  ABC-01-049  49  1   11/12/1966  39  YEARS   M   &quot;WHITE&quot;     4   &quot;ARM D&quot;</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="st">ABC DM  ABC-01-050  50  1   12/19/1958  47  YEARS   M   &quot;WHITE&quot;     2   &quot;ARM B&quot;</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="st">ABC DM  ABC-01-051  51  1   5/2/1972    34  YEARS   M   &quot;WHITE&quot;       1 &quot;ARM A&quot;</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="st">ABC DM  ABC-01-052  52  1   6/27/1961   45  YEARS   F   &quot;WHITE&quot;     3   &quot;ARM C&quot;</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="st">ABC DM  ABC-01-053  53  1   4/7/1980    26  YEARS   F   &quot;WHITE&quot;       2 &quot;ARM B&quot;</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="st">ABC DM  ABC-01-054  54  1   9/13/1962   44  YEARS   M   &quot;WHITE&quot;       4 &quot;ARM D&quot;</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="st">ABC DM  ABC-01-055  55  1   6/11/1959   47  YEARS   F   &quot;BLACK OR AFRICAN AMERICAN&quot; 3   &quot;ARM C&quot;</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="st">ABC DM  ABC-01-056  56  1   5/2/1975    31  YEARS   M   &quot;WHITE&quot;       1 &quot;ARM A&quot;</span></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="st">ABC DM  ABC-01-113  113 1   2/8/1932    74  YEARS   M   &quot;WHITE&quot;       4 &quot;ARM D&quot;&#39;</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a><span class="co"># Create factors for categorical variables</span></span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a><span class="co"># to get zero counts</span></span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>adsl<span class="sc">$</span>SEX <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(adsl<span class="sc">$</span>SEX)</span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>adsl<span class="sc">$</span>RACE <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(adsl<span class="sc">$</span>RACE)</span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>adsl<span class="sc">$</span>ARM <span class="ot">&lt;-</span> <span class="fu">factor</span>(adsl<span class="sc">$</span>ARM, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;ARM A&quot;</span>, <span class="st">&quot;ARM B&quot;</span>, <span class="st">&quot;ARM C&quot;</span>, <span class="st">&quot;ARM D&quot;</span>))</span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a><span class="co"># Initalize ARDS</span></span>
+<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a><span class="fu">init_ards</span>(<span class="at">studyid =</span> <span class="st">&quot;ABC&quot;</span>,</span>
+<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a>          <span class="at">tableid =</span> <span class="st">&quot;01&quot;</span>, <span class="at">adsns =</span> <span class="st">&quot;adsl&quot;</span>,</span>
+<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a>          <span class="at">population =</span> <span class="st">&quot;safety population&quot;</span>,</span>
+<span id="cb1-30"><a href="#cb1-30" tabindex="-1"></a>          <span class="at">time =</span> <span class="st">&quot;SCREENING&quot;</span>, <span class="at">where =</span> <span class="st">&quot;saffl = TRUE&quot;</span>, <span class="at">reset =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-31"><a href="#cb1-31" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" tabindex="-1"></a><span class="co"># Perform analysis on AGE variable</span></span>
+<span id="cb1-33"><a href="#cb1-33" tabindex="-1"></a>agedf <span class="ot">&lt;-</span> adsl <span class="sc">|&gt;</span></span>
+<span id="cb1-34"><a href="#cb1-34" tabindex="-1"></a>  <span class="fu">select</span>(AGE, ARM) <span class="sc">|&gt;</span></span>
+<span id="cb1-35"><a href="#cb1-35" tabindex="-1"></a>  <span class="fu">group_by</span>(ARM, <span class="at">.drop =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-36"><a href="#cb1-36" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb1-37"><a href="#cb1-37" tabindex="-1"></a>            <span class="at">mean =</span> <span class="fu">mean</span>(AGE),</span>
+<span id="cb1-38"><a href="#cb1-38" tabindex="-1"></a>            <span class="at">std =</span> <span class="fu">sd</span>(AGE),</span>
+<span id="cb1-39"><a href="#cb1-39" tabindex="-1"></a>            <span class="at">median =</span> <span class="fu">median</span>(AGE),</span>
+<span id="cb1-40"><a href="#cb1-40" tabindex="-1"></a>            <span class="at">min =</span> <span class="fu">min</span>(AGE),</span>
+<span id="cb1-41"><a href="#cb1-41" tabindex="-1"></a>            <span class="at">max =</span> <span class="fu">max</span>(AGE)) <span class="sc">|&gt;</span></span>
+<span id="cb1-42"><a href="#cb1-42" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">analvar =</span> <span class="st">&quot;AGE&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-43"><a href="#cb1-43" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-44"><a href="#cb1-44" tabindex="-1"></a>  <span class="fu">add_ards</span>(<span class="at">statvars =</span> <span class="fu">c</span>(<span class="st">&quot;n&quot;</span>, <span class="st">&quot;mean&quot;</span>, <span class="st">&quot;std&quot;</span>, <span class="st">&quot;median&quot;</span>, <span class="st">&quot;min&quot;</span>, <span class="st">&quot;max&quot;</span>),</span>
+<span id="cb1-45"><a href="#cb1-45" tabindex="-1"></a>           <span class="at">statdesc =</span> <span class="fu">c</span>(<span class="st">&quot;N&quot;</span>, <span class="st">&quot;Mean&quot;</span>, <span class="st">&quot;Std&quot;</span>, <span class="st">&quot;Median&quot;</span>, <span class="st">&quot;Min&quot;</span>, <span class="st">&quot;Max&quot;</span>),</span>
+<span id="cb1-46"><a href="#cb1-46" tabindex="-1"></a>           <span class="at">anal_var =</span> <span class="st">&quot;AGE&quot;</span>, <span class="at">trtvar =</span> <span class="st">&quot;ARM&quot;</span>) </span>
+<span id="cb1-47"><a href="#cb1-47" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" tabindex="-1"></a><span class="co"># View analysis results</span></span>
+<span id="cb1-49"><a href="#cb1-49" tabindex="-1"></a>agedf</span>
+<span id="cb1-50"><a href="#cb1-50" tabindex="-1"></a><span class="co"># # A tibble: 4 × 8</span></span>
+<span id="cb1-51"><a href="#cb1-51" tabindex="-1"></a><span class="co">#   ARM       n  mean   std median   min   max analvar</span></span>
+<span id="cb1-52"><a href="#cb1-52" tabindex="-1"></a><span class="co">#   &lt;fct&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt;  </span></span>
+<span id="cb1-53"><a href="#cb1-53" tabindex="-1"></a><span class="co"># 1 ARM A     2  32.5  2.12   32.5    31    34 AGE    </span></span>
+<span id="cb1-54"><a href="#cb1-54" tabindex="-1"></a><span class="co"># 2 ARM B     2  36.5 14.8    36.5    26    47 AGE    </span></span>
+<span id="cb1-55"><a href="#cb1-55" tabindex="-1"></a><span class="co"># 3 ARM C     2  46    1.41   46      45    47 AGE    </span></span>
+<span id="cb1-56"><a href="#cb1-56" tabindex="-1"></a><span class="co"># 4 ARM D     3  52.3 18.9    44      39    74 AGE    </span></span>
+<span id="cb1-57"><a href="#cb1-57" tabindex="-1"></a></span>
+<span id="cb1-58"><a href="#cb1-58" tabindex="-1"></a><span class="co"># Get population counts</span></span>
+<span id="cb1-59"><a href="#cb1-59" tabindex="-1"></a>trt_pop <span class="ot">&lt;-</span> <span class="fu">count</span>(adsl, ARM) <span class="sc">|&gt;</span> <span class="fu">deframe</span>()</span>
+<span id="cb1-60"><a href="#cb1-60" tabindex="-1"></a></span>
+<span id="cb1-61"><a href="#cb1-61" tabindex="-1"></a>trt_pop</span>
+<span id="cb1-62"><a href="#cb1-62" tabindex="-1"></a><span class="co"># ARM A ARM B ARM C ARM D </span></span>
+<span id="cb1-63"><a href="#cb1-63" tabindex="-1"></a><span class="co">#   2     2     2     3 </span></span>
+<span id="cb1-64"><a href="#cb1-64" tabindex="-1"></a></span>
+<span id="cb1-65"><a href="#cb1-65" tabindex="-1"></a><span class="co"># Perform analysis on SEX variable</span></span>
+<span id="cb1-66"><a href="#cb1-66" tabindex="-1"></a>sexdf <span class="ot">&lt;-</span> adsl <span class="sc">|&gt;</span></span>
+<span id="cb1-67"><a href="#cb1-67" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">denom =</span> trt_pop[<span class="fu">paste0</span>(adsl<span class="sc">$</span>ARM)]) <span class="sc">|&gt;</span></span>
+<span id="cb1-68"><a href="#cb1-68" tabindex="-1"></a>  <span class="fu">group_by</span>(SEX, ARM, denom, <span class="at">.drop =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-69"><a href="#cb1-69" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">cnt =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb1-70"><a href="#cb1-70" tabindex="-1"></a>  <span class="fu">transmute</span>(SEX, ARM, cnt, <span class="at">analvar =</span> <span class="st">&quot;SEX&quot;</span>, <span class="at">label =</span> SEX,  </span>
+<span id="cb1-71"><a href="#cb1-71" tabindex="-1"></a>            <span class="at">pct =</span>  <span class="fu">if_else</span>(<span class="fu">is.na</span>(denom), <span class="dv">0</span>, cnt <span class="sc">/</span> denom <span class="sc">*</span> <span class="dv">100</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-72"><a href="#cb1-72" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-73"><a href="#cb1-73" tabindex="-1"></a>  <span class="fu">add_ards</span>(<span class="at">statvars =</span> <span class="fu">c</span>(<span class="st">&quot;cnt&quot;</span>, <span class="st">&quot;pct&quot;</span>), <span class="at">statdesc =</span> <span class="st">&quot;label&quot;</span>,</span>
+<span id="cb1-74"><a href="#cb1-74" tabindex="-1"></a>           <span class="at">anal_var =</span> <span class="st">&quot;SEX&quot;</span>, <span class="at">trtvar =</span> <span class="st">&quot;ARM&quot;</span>) </span>
+<span id="cb1-75"><a href="#cb1-75" tabindex="-1"></a></span>
+<span id="cb1-76"><a href="#cb1-76" tabindex="-1"></a><span class="co"># View analysis results</span></span>
+<span id="cb1-77"><a href="#cb1-77" tabindex="-1"></a>sexdf</span>
+<span id="cb1-78"><a href="#cb1-78" tabindex="-1"></a><span class="co"># # A tibble: 8 × 6</span></span>
+<span id="cb1-79"><a href="#cb1-79" tabindex="-1"></a><span class="co">#   SEX   ARM     cnt analvar label   pct</span></span>
+<span id="cb1-80"><a href="#cb1-80" tabindex="-1"></a><span class="co">#   &lt;fct&gt; &lt;fct&gt; &lt;int&gt; &lt;chr&gt;   &lt;fct&gt; &lt;dbl&gt;</span></span>
+<span id="cb1-81"><a href="#cb1-81" tabindex="-1"></a><span class="co"># 1 F     ARM A     0 SEX     F         0</span></span>
+<span id="cb1-82"><a href="#cb1-82" tabindex="-1"></a><span class="co"># 2 F     ARM B     1 SEX     F        50</span></span>
+<span id="cb1-83"><a href="#cb1-83" tabindex="-1"></a><span class="co"># 3 F     ARM C     2 SEX     F       100</span></span>
+<span id="cb1-84"><a href="#cb1-84" tabindex="-1"></a><span class="co"># 4 F     ARM D     0 SEX     F         0</span></span>
+<span id="cb1-85"><a href="#cb1-85" tabindex="-1"></a><span class="co"># 5 M     ARM A     2 SEX     M       100</span></span>
+<span id="cb1-86"><a href="#cb1-86" tabindex="-1"></a><span class="co"># 6 M     ARM B     1 SEX     M        50</span></span>
+<span id="cb1-87"><a href="#cb1-87" tabindex="-1"></a><span class="co"># 7 M     ARM C     0 SEX     M         0</span></span>
+<span id="cb1-88"><a href="#cb1-88" tabindex="-1"></a><span class="co"># 8 M     ARM D     3 SEX     M       100</span></span>
+<span id="cb1-89"><a href="#cb1-89" tabindex="-1"></a></span>
+<span id="cb1-90"><a href="#cb1-90" tabindex="-1"></a><span class="co"># Perform analysis on RACE</span></span>
+<span id="cb1-91"><a href="#cb1-91" tabindex="-1"></a>racedf <span class="ot">&lt;-</span> adsl <span class="sc">|&gt;</span></span>
+<span id="cb1-92"><a href="#cb1-92" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">denom =</span> trt_pop[<span class="fu">paste0</span>(adsl<span class="sc">$</span>ARM)]) <span class="sc">|&gt;</span></span>
+<span id="cb1-93"><a href="#cb1-93" tabindex="-1"></a>  <span class="fu">group_by</span>(RACE, ARM, denom, <span class="at">.drop =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-94"><a href="#cb1-94" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">cnt =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb1-95"><a href="#cb1-95" tabindex="-1"></a>  <span class="fu">transmute</span>(RACE, ARM, cnt, <span class="at">analvar =</span> <span class="st">&quot;RACE&quot;</span>, <span class="at">label =</span> RACE,  </span>
+<span id="cb1-96"><a href="#cb1-96" tabindex="-1"></a>            <span class="at">pct =</span>  <span class="fu">if_else</span>(<span class="fu">is.na</span>(denom), <span class="dv">0</span>, cnt <span class="sc">/</span> denom <span class="sc">*</span> <span class="dv">100</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-97"><a href="#cb1-97" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-98"><a href="#cb1-98" tabindex="-1"></a>  <span class="fu">add_ards</span>(<span class="at">statvars =</span> <span class="fu">c</span>(<span class="st">&quot;cnt&quot;</span>, <span class="st">&quot;pct&quot;</span>), <span class="at">statdesc =</span> <span class="st">&quot;label&quot;</span>,</span>
+<span id="cb1-99"><a href="#cb1-99" tabindex="-1"></a>           <span class="at">anal_var =</span> <span class="st">&quot;RACE&quot;</span>, <span class="at">trtvar =</span> <span class="st">&quot;ARM&quot;</span>) </span>
+<span id="cb1-100"><a href="#cb1-100" tabindex="-1"></a></span>
+<span id="cb1-101"><a href="#cb1-101" tabindex="-1"></a><span class="co"># View analysis results</span></span>
+<span id="cb1-102"><a href="#cb1-102" tabindex="-1"></a>racedf</span>
+<span id="cb1-103"><a href="#cb1-103" tabindex="-1"></a><span class="co"># # A tibble: 8 × 6</span></span>
+<span id="cb1-104"><a href="#cb1-104" tabindex="-1"></a><span class="co">#   RACE                      ARM     cnt analvar label                       pct</span></span>
+<span id="cb1-105"><a href="#cb1-105" tabindex="-1"></a><span class="co">#   &lt;fct&gt;                     &lt;fct&gt; &lt;int&gt; &lt;chr&gt;   &lt;fct&gt;                     &lt;dbl&gt;</span></span>
+<span id="cb1-106"><a href="#cb1-106" tabindex="-1"></a><span class="co"># 1 BLACK OR AFRICAN AMERICAN ARM A     0 RACE    BLACK OR AFRICAN AMERICAN     0</span></span>
+<span id="cb1-107"><a href="#cb1-107" tabindex="-1"></a><span class="co"># 2 BLACK OR AFRICAN AMERICAN ARM B     0 RACE    BLACK OR AFRICAN AMERICAN     0</span></span>
+<span id="cb1-108"><a href="#cb1-108" tabindex="-1"></a><span class="co"># 3 BLACK OR AFRICAN AMERICAN ARM C     1 RACE    BLACK OR AFRICAN AMERICAN    50</span></span>
+<span id="cb1-109"><a href="#cb1-109" tabindex="-1"></a><span class="co"># 4 BLACK OR AFRICAN AMERICAN ARM D     0 RACE    BLACK OR AFRICAN AMERICAN     0</span></span>
+<span id="cb1-110"><a href="#cb1-110" tabindex="-1"></a><span class="co"># 5 WHITE                     ARM A     2 RACE    WHITE                       100</span></span>
+<span id="cb1-111"><a href="#cb1-111" tabindex="-1"></a><span class="co"># 6 WHITE                     ARM B     2 RACE    WHITE                       100</span></span>
+<span id="cb1-112"><a href="#cb1-112" tabindex="-1"></a><span class="co"># 7 WHITE                     ARM C     1 RACE    WHITE                        50</span></span>
+<span id="cb1-113"><a href="#cb1-113" tabindex="-1"></a><span class="co"># 8 WHITE                     ARM D     3 RACE    WHITE                       100</span></span>
+<span id="cb1-114"><a href="#cb1-114" tabindex="-1"></a></span>
+<span id="cb1-115"><a href="#cb1-115" tabindex="-1"></a><span class="co"># Extract ARDS</span></span>
+<span id="cb1-116"><a href="#cb1-116" tabindex="-1"></a>ards <span class="ot">&lt;-</span> <span class="fu">get_ards</span>() </span>
+<span id="cb1-117"><a href="#cb1-117" tabindex="-1"></a></span>
+<span id="cb1-118"><a href="#cb1-118" tabindex="-1"></a><span class="co"># Save ARDS data to file or database here</span></span>
+<span id="cb1-119"><a href="#cb1-119" tabindex="-1"></a></span>
+<span id="cb1-120"><a href="#cb1-120" tabindex="-1"></a><span class="co"># Remove some variables to improve readability</span></span>
+<span id="cb1-121"><a href="#cb1-121" tabindex="-1"></a>ards_reduced <span class="ot">&lt;-</span> ards <span class="sc">|&gt;</span> </span>
+<span id="cb1-122"><a href="#cb1-122" tabindex="-1"></a>  <span class="fu">select</span>(trtvar, trtval, anal_var, anal_val, </span>
+<span id="cb1-123"><a href="#cb1-123" tabindex="-1"></a>         statname, statval)</span>
+<span id="cb1-124"><a href="#cb1-124" tabindex="-1"></a></span>
+<span id="cb1-125"><a href="#cb1-125" tabindex="-1"></a><span class="co"># View results</span></span>
+<span id="cb1-126"><a href="#cb1-126" tabindex="-1"></a>ards_reduced</span>
+<span id="cb1-127"><a href="#cb1-127" tabindex="-1"></a><span class="co">#    trtvar trtval anal_var                  anal_val statname    statval</span></span>
+<span id="cb1-128"><a href="#cb1-128" tabindex="-1"></a><span class="co"># 1     ARM  ARM A      AGE                      &lt;NA&gt;        n   2.000000</span></span>
+<span id="cb1-129"><a href="#cb1-129" tabindex="-1"></a><span class="co"># 2     ARM  ARM B      AGE                      &lt;NA&gt;        n   2.000000</span></span>
+<span id="cb1-130"><a href="#cb1-130" tabindex="-1"></a><span class="co"># 3     ARM  ARM C      AGE                      &lt;NA&gt;        n   2.000000</span></span>
+<span id="cb1-131"><a href="#cb1-131" tabindex="-1"></a><span class="co"># 4     ARM  ARM D      AGE                      &lt;NA&gt;        n   3.000000</span></span>
+<span id="cb1-132"><a href="#cb1-132" tabindex="-1"></a><span class="co"># 5     ARM  ARM A      AGE                      &lt;NA&gt;     mean  32.500000</span></span>
+<span id="cb1-133"><a href="#cb1-133" tabindex="-1"></a><span class="co"># 6     ARM  ARM B      AGE                      &lt;NA&gt;     mean  36.500000</span></span>
+<span id="cb1-134"><a href="#cb1-134" tabindex="-1"></a><span class="co"># 7     ARM  ARM C      AGE                      &lt;NA&gt;     mean  46.000000</span></span>
+<span id="cb1-135"><a href="#cb1-135" tabindex="-1"></a><span class="co"># 8     ARM  ARM D      AGE                      &lt;NA&gt;     mean  52.333333</span></span>
+<span id="cb1-136"><a href="#cb1-136" tabindex="-1"></a><span class="co"># 9     ARM  ARM A      AGE                      &lt;NA&gt;      std   2.121320</span></span>
+<span id="cb1-137"><a href="#cb1-137" tabindex="-1"></a><span class="co"># 10    ARM  ARM B      AGE                      &lt;NA&gt;      std  14.849242</span></span>
+<span id="cb1-138"><a href="#cb1-138" tabindex="-1"></a><span class="co"># 11    ARM  ARM C      AGE                      &lt;NA&gt;      std   1.414214</span></span>
+<span id="cb1-139"><a href="#cb1-139" tabindex="-1"></a><span class="co"># 12    ARM  ARM D      AGE                      &lt;NA&gt;      std  18.929694</span></span>
+<span id="cb1-140"><a href="#cb1-140" tabindex="-1"></a><span class="co"># 13    ARM  ARM A      AGE                      &lt;NA&gt;   median  32.500000</span></span>
+<span id="cb1-141"><a href="#cb1-141" tabindex="-1"></a><span class="co"># 14    ARM  ARM B      AGE                      &lt;NA&gt;   median  36.500000</span></span>
+<span id="cb1-142"><a href="#cb1-142" tabindex="-1"></a><span class="co"># 15    ARM  ARM C      AGE                      &lt;NA&gt;   median  46.000000</span></span>
+<span id="cb1-143"><a href="#cb1-143" tabindex="-1"></a><span class="co"># 16    ARM  ARM D      AGE                      &lt;NA&gt;   median  44.000000</span></span>
+<span id="cb1-144"><a href="#cb1-144" tabindex="-1"></a><span class="co"># 17    ARM  ARM A      AGE                      &lt;NA&gt;      min  31.000000</span></span>
+<span id="cb1-145"><a href="#cb1-145" tabindex="-1"></a><span class="co"># 18    ARM  ARM B      AGE                      &lt;NA&gt;      min  26.000000</span></span>
+<span id="cb1-146"><a href="#cb1-146" tabindex="-1"></a><span class="co"># 19    ARM  ARM C      AGE                      &lt;NA&gt;      min  45.000000</span></span>
+<span id="cb1-147"><a href="#cb1-147" tabindex="-1"></a><span class="co"># 20    ARM  ARM D      AGE                      &lt;NA&gt;      min  39.000000</span></span>
+<span id="cb1-148"><a href="#cb1-148" tabindex="-1"></a><span class="co"># 21    ARM  ARM A      AGE                      &lt;NA&gt;      max  34.000000</span></span>
+<span id="cb1-149"><a href="#cb1-149" tabindex="-1"></a><span class="co"># 22    ARM  ARM B      AGE                      &lt;NA&gt;      max  47.000000</span></span>
+<span id="cb1-150"><a href="#cb1-150" tabindex="-1"></a><span class="co"># 23    ARM  ARM C      AGE                      &lt;NA&gt;      max  47.000000</span></span>
+<span id="cb1-151"><a href="#cb1-151" tabindex="-1"></a><span class="co"># 24    ARM  ARM D      AGE                      &lt;NA&gt;      max  74.000000</span></span>
+<span id="cb1-152"><a href="#cb1-152" tabindex="-1"></a><span class="co"># 25    ARM  ARM A      SEX                         F      cnt   0.000000</span></span>
+<span id="cb1-153"><a href="#cb1-153" tabindex="-1"></a><span class="co"># 26    ARM  ARM B      SEX                         F      cnt   1.000000</span></span>
+<span id="cb1-154"><a href="#cb1-154" tabindex="-1"></a><span class="co"># 27    ARM  ARM C      SEX                         F      cnt   2.000000</span></span>
+<span id="cb1-155"><a href="#cb1-155" tabindex="-1"></a><span class="co"># 28    ARM  ARM D      SEX                         F      cnt   0.000000</span></span>
+<span id="cb1-156"><a href="#cb1-156" tabindex="-1"></a><span class="co"># 29    ARM  ARM A      SEX                         M      cnt   2.000000</span></span>
+<span id="cb1-157"><a href="#cb1-157" tabindex="-1"></a><span class="co"># 30    ARM  ARM B      SEX                         M      cnt   1.000000</span></span>
+<span id="cb1-158"><a href="#cb1-158" tabindex="-1"></a><span class="co"># 31    ARM  ARM C      SEX                         M      cnt   0.000000</span></span>
+<span id="cb1-159"><a href="#cb1-159" tabindex="-1"></a><span class="co"># 32    ARM  ARM D      SEX                         M      cnt   3.000000</span></span>
+<span id="cb1-160"><a href="#cb1-160" tabindex="-1"></a><span class="co"># 33    ARM  ARM A      SEX                         F      pct   0.000000</span></span>
+<span id="cb1-161"><a href="#cb1-161" tabindex="-1"></a><span class="co"># 34    ARM  ARM B      SEX                         F      pct  50.000000</span></span>
+<span id="cb1-162"><a href="#cb1-162" tabindex="-1"></a><span class="co"># 35    ARM  ARM C      SEX                         F      pct 100.000000</span></span>
+<span id="cb1-163"><a href="#cb1-163" tabindex="-1"></a><span class="co"># 36    ARM  ARM D      SEX                         F      pct   0.000000</span></span>
+<span id="cb1-164"><a href="#cb1-164" tabindex="-1"></a><span class="co"># 37    ARM  ARM A      SEX                         M      pct 100.000000</span></span>
+<span id="cb1-165"><a href="#cb1-165" tabindex="-1"></a><span class="co"># 38    ARM  ARM B      SEX                         M      pct  50.000000</span></span>
+<span id="cb1-166"><a href="#cb1-166" tabindex="-1"></a><span class="co"># 39    ARM  ARM C      SEX                         M      pct   0.000000</span></span>
+<span id="cb1-167"><a href="#cb1-167" tabindex="-1"></a><span class="co"># 40    ARM  ARM D      SEX                         M      pct 100.000000</span></span>
+<span id="cb1-168"><a href="#cb1-168" tabindex="-1"></a><span class="co"># 41    ARM  ARM A     RACE BLACK OR AFRICAN AMERICAN      cnt   0.000000</span></span>
+<span id="cb1-169"><a href="#cb1-169" tabindex="-1"></a><span class="co"># 42    ARM  ARM B     RACE BLACK OR AFRICAN AMERICAN      cnt   0.000000</span></span>
+<span id="cb1-170"><a href="#cb1-170" tabindex="-1"></a><span class="co"># 43    ARM  ARM C     RACE BLACK OR AFRICAN AMERICAN      cnt   1.000000</span></span>
+<span id="cb1-171"><a href="#cb1-171" tabindex="-1"></a><span class="co"># 44    ARM  ARM D     RACE BLACK OR AFRICAN AMERICAN      cnt   0.000000</span></span>
+<span id="cb1-172"><a href="#cb1-172" tabindex="-1"></a><span class="co"># 45    ARM  ARM A     RACE                     WHITE      cnt   2.000000</span></span>
+<span id="cb1-173"><a href="#cb1-173" tabindex="-1"></a><span class="co"># 46    ARM  ARM B     RACE                     WHITE      cnt   2.000000</span></span>
+<span id="cb1-174"><a href="#cb1-174" tabindex="-1"></a><span class="co"># 47    ARM  ARM C     RACE                     WHITE      cnt   1.000000</span></span>
+<span id="cb1-175"><a href="#cb1-175" tabindex="-1"></a><span class="co"># 48    ARM  ARM D     RACE                     WHITE      cnt   3.000000</span></span>
+<span id="cb1-176"><a href="#cb1-176" tabindex="-1"></a><span class="co"># 49    ARM  ARM A     RACE BLACK OR AFRICAN AMERICAN      pct   0.000000</span></span>
+<span id="cb1-177"><a href="#cb1-177" tabindex="-1"></a><span class="co"># 50    ARM  ARM B     RACE BLACK OR AFRICAN AMERICAN      pct   0.000000</span></span>
+<span id="cb1-178"><a href="#cb1-178" tabindex="-1"></a><span class="co"># 51    ARM  ARM C     RACE BLACK OR AFRICAN AMERICAN      pct  50.000000</span></span>
+<span id="cb1-179"><a href="#cb1-179" tabindex="-1"></a><span class="co"># 52    ARM  ARM D     RACE BLACK OR AFRICAN AMERICAN      pct   0.000000</span></span>
+<span id="cb1-180"><a href="#cb1-180" tabindex="-1"></a><span class="co"># 53    ARM  ARM A     RACE                     WHITE      pct 100.000000</span></span>
+<span id="cb1-181"><a href="#cb1-181" tabindex="-1"></a><span class="co"># 54    ARM  ARM B     RACE                     WHITE      pct 100.000000</span></span>
+<span id="cb1-182"><a href="#cb1-182" tabindex="-1"></a><span class="co"># 55    ARM  ARM C     RACE                     WHITE      pct  50.000000</span></span>
+<span id="cb1-183"><a href="#cb1-183" tabindex="-1"></a><span class="co"># 56    ARM  ARM D     RACE                     WHITE      pct 100.000000</span></span></code></pre></div>
+<p>Notice that the ARDS dataset is the exact same dataset as that
+produced in Example 1. In this program, however, the final reporting
+dataset was not created. We will create the reporting dataset in the
+next program.</p>
+</div>
+<div id="reporting-from-ards" class="section level2">
+<h2>Reporting from ARDS</h2>
+<p>The next program will pick up the ARDS dataset from the analysis
+program, and produce a final data frame for reporting. Note the
+following about this program:</p>
+<ul>
+<li>The first step is to convert the ARDS data back into wide form,
+using the <code>restore_ards()</code> function.</li>
+<li>Subsequent steps format and combine the restored data to create
+analysis blocks.</li>
+<li>The analysis blocks are combined into a single final data frame. At
+this point, the data can be fed to a reporting package of your
+choice.</li>
+</ul>
+<p>Here is the code:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co"># Extract ARDS data from file or database here</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co"># Restore to wide format</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">restore_ards</span>(ards)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co"># View results</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>res</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co"># $AGE</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#     ARM anal_var n     mean       std median min max</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co"># 1 ARM A      AGE 2 32.50000  2.121320   32.5  31  34</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co"># 2 ARM B      AGE 2 36.50000 14.849242   36.5  26  47</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co"># 3 ARM C      AGE 2 46.00000  1.414214   46.0  45  47</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co"># 4 ARM D      AGE 3 52.33333 18.929694   44.0  39  74</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co"># $SEX</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#     ARM anal_var SEX cnt pct</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co"># 1 ARM A      SEX   F   0   0</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co"># 2 ARM B      SEX   F   1  50</span></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co"># 3 ARM C      SEX   F   2 100</span></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a><span class="co"># 4 ARM D      SEX   F   0   0</span></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a><span class="co"># 5 ARM A      SEX   M   2 100</span></span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="co"># 6 ARM B      SEX   M   1  50</span></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a><span class="co"># 7 ARM C      SEX   M   0   0</span></span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a><span class="co"># 8 ARM D      SEX   M   3 100</span></span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co"># $RACE</span></span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a><span class="co">#     ARM anal_var                      RACE cnt pct</span></span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co"># 1 ARM A     RACE BLACK OR AFRICAN AMERICAN   0   0</span></span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a><span class="co"># 2 ARM B     RACE BLACK OR AFRICAN AMERICAN   0   0</span></span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a><span class="co"># 3 ARM C     RACE BLACK OR AFRICAN AMERICAN   1  50</span></span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a><span class="co"># 4 ARM D     RACE BLACK OR AFRICAN AMERICAN   0   0</span></span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a><span class="co"># 5 ARM A     RACE                     WHITE   2 100</span></span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a><span class="co"># 6 ARM B     RACE                     WHITE   2 100</span></span>
+<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a><span class="co"># 7 ARM C     RACE                     WHITE   1  50</span></span>
+<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a><span class="co"># 8 ARM D     RACE                     WHITE   3 100</span></span>
+<span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a></span>
+<span id="cb2-38"><a href="#cb2-38" tabindex="-1"></a><span class="co"># Perform formatting on AGE analysis</span></span>
+<span id="cb2-39"><a href="#cb2-39" tabindex="-1"></a>agedf <span class="ot">&lt;-</span> res<span class="sc">$</span>AGE <span class="sc">|&gt;</span></span>
+<span id="cb2-40"><a href="#cb2-40" tabindex="-1"></a>  <span class="fu">transmute</span>(anal_var, ARM,</span>
+<span id="cb2-41"><a href="#cb2-41" tabindex="-1"></a>            <span class="at">n =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%d&quot;</span>, n),</span>
+<span id="cb2-42"><a href="#cb2-42" tabindex="-1"></a>            <span class="at">mean_sd =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.1f (%.2f)&quot;</span>, mean, std),</span>
+<span id="cb2-43"><a href="#cb2-43" tabindex="-1"></a>            <span class="at">median =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.1f&quot;</span>, median),</span>
+<span id="cb2-44"><a href="#cb2-44" tabindex="-1"></a>            <span class="at">min_max =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.1f-%.1f&quot;</span>, min, max)) <span class="sc">|&gt;</span></span>
+<span id="cb2-45"><a href="#cb2-45" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(n, mean_sd, median, min_max),</span>
+<span id="cb2-46"><a href="#cb2-46" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">&quot;label&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;stats&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-47"><a href="#cb2-47" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> ARM,</span>
+<span id="cb2-48"><a href="#cb2-48" tabindex="-1"></a>              <span class="at">values_from =</span> <span class="fu">c</span>(stats)) <span class="sc">|&gt;</span></span>
+<span id="cb2-49"><a href="#cb2-49" tabindex="-1"></a>  <span class="fu">transmute</span>(anal_var, <span class="at">label =</span> <span class="fu">c</span>(<span class="st">&quot;N&quot;</span>, <span class="st">&quot;Mean (Std)&quot;</span>, <span class="st">&quot;Median&quot;</span>, <span class="st">&quot;Min-Max&quot;</span>),</span>
+<span id="cb2-50"><a href="#cb2-50" tabindex="-1"></a>            <span class="at">trtA =</span> <span class="st">`</span><span class="at">ARM A</span><span class="st">`</span>, <span class="at">trtB =</span> <span class="st">`</span><span class="at">ARM B</span><span class="st">`</span>, <span class="at">trtC =</span> <span class="st">`</span><span class="at">ARM C</span><span class="st">`</span>, <span class="at">trtD =</span> <span class="st">`</span><span class="at">ARM D</span><span class="st">`</span>)</span>
+<span id="cb2-51"><a href="#cb2-51" tabindex="-1"></a></span>
+<span id="cb2-52"><a href="#cb2-52" tabindex="-1"></a><span class="co"># View analysis results</span></span>
+<span id="cb2-53"><a href="#cb2-53" tabindex="-1"></a>agedf</span>
+<span id="cb2-54"><a href="#cb2-54" tabindex="-1"></a><span class="co"># # A tibble: 4 × 6</span></span>
+<span id="cb2-55"><a href="#cb2-55" tabindex="-1"></a><span class="co">#   anal_var label      trtA        trtB         trtC        trtD        </span></span>
+<span id="cb2-56"><a href="#cb2-56" tabindex="-1"></a><span class="co">#   &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;       </span></span>
+<span id="cb2-57"><a href="#cb2-57" tabindex="-1"></a><span class="co"># 1 AGE      N          2           2            2           3           </span></span>
+<span id="cb2-58"><a href="#cb2-58" tabindex="-1"></a><span class="co"># 2 AGE      Mean (Std) 32.5 (2.12) 36.5 (14.85) 46.0 (1.41) 52.3 (18.93)</span></span>
+<span id="cb2-59"><a href="#cb2-59" tabindex="-1"></a><span class="co"># 3 AGE      Median     32.5        36.5         46.0        44.0        </span></span>
+<span id="cb2-60"><a href="#cb2-60" tabindex="-1"></a><span class="co"># 4 AGE      Min-Max    31.0-34.0   26.0-47.0    45.0-47.0   39.0-74.0 </span></span>
+<span id="cb2-61"><a href="#cb2-61" tabindex="-1"></a></span>
+<span id="cb2-62"><a href="#cb2-62" tabindex="-1"></a></span>
+<span id="cb2-63"><a href="#cb2-63" tabindex="-1"></a><span class="co"># Perform formatting on SEX analysis</span></span>
+<span id="cb2-64"><a href="#cb2-64" tabindex="-1"></a>sexdf <span class="ot">&lt;-</span> res<span class="sc">$</span>SEX <span class="sc">|&gt;</span></span>
+<span id="cb2-65"><a href="#cb2-65" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> ARM,</span>
+<span id="cb2-66"><a href="#cb2-66" tabindex="-1"></a>              <span class="at">values_from =</span> <span class="fu">c</span>(cnt, pct)) <span class="sc">|&gt;</span></span>
+<span id="cb2-67"><a href="#cb2-67" tabindex="-1"></a>  <span class="fu">transmute</span>(anal_var, <span class="at">label =</span> SEX,</span>
+<span id="cb2-68"><a href="#cb2-68" tabindex="-1"></a>            <span class="at">trtA =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%1d (%3.0f%%)&quot;</span>, <span class="st">`</span><span class="at">cnt_ARM A</span><span class="st">`</span>, <span class="st">`</span><span class="at">pct_ARM A</span><span class="st">`</span>),</span>
+<span id="cb2-69"><a href="#cb2-69" tabindex="-1"></a>            <span class="at">trtB =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%1d (%3.0f%%)&quot;</span>, <span class="st">`</span><span class="at">cnt_ARM B</span><span class="st">`</span>, <span class="st">`</span><span class="at">pct_ARM B</span><span class="st">`</span>),</span>
+<span id="cb2-70"><a href="#cb2-70" tabindex="-1"></a>            <span class="at">trtC =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%1d (%3.0f%%)&quot;</span>, <span class="st">`</span><span class="at">cnt_ARM C</span><span class="st">`</span>, <span class="st">`</span><span class="at">pct_ARM C</span><span class="st">`</span>),</span>
+<span id="cb2-71"><a href="#cb2-71" tabindex="-1"></a>            <span class="at">trtD =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%1d (%3.0f%%)&quot;</span>, <span class="st">`</span><span class="at">cnt_ARM D</span><span class="st">`</span>, <span class="st">`</span><span class="at">pct_ARM D</span><span class="st">`</span>))</span>
+<span id="cb2-72"><a href="#cb2-72" tabindex="-1"></a></span>
+<span id="cb2-73"><a href="#cb2-73" tabindex="-1"></a></span>
+<span id="cb2-74"><a href="#cb2-74" tabindex="-1"></a><span class="co"># View analysis results</span></span>
+<span id="cb2-75"><a href="#cb2-75" tabindex="-1"></a>sexdf</span>
+<span id="cb2-76"><a href="#cb2-76" tabindex="-1"></a><span class="co"># # A tibble: 2 × 6</span></span>
+<span id="cb2-77"><a href="#cb2-77" tabindex="-1"></a><span class="co"># analvar label trtA     trtB     trtC     trtD    </span></span>
+<span id="cb2-78"><a href="#cb2-78" tabindex="-1"></a><span class="co">#   &lt;chr&gt;   &lt;fct&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;   </span></span>
+<span id="cb2-79"><a href="#cb2-79" tabindex="-1"></a><span class="co"># 1 SEX     F     0 (  0%) 1 ( 50%) 2 (100%) 0 (  0%)</span></span>
+<span id="cb2-80"><a href="#cb2-80" tabindex="-1"></a><span class="co"># 2 SEX     M     2 (100%) 1 ( 50%) 0 (  0%) 3 (100%)</span></span>
+<span id="cb2-81"><a href="#cb2-81" tabindex="-1"></a></span>
+<span id="cb2-82"><a href="#cb2-82" tabindex="-1"></a></span>
+<span id="cb2-83"><a href="#cb2-83" tabindex="-1"></a><span class="co"># Perform formatting on RACE analysis</span></span>
+<span id="cb2-84"><a href="#cb2-84" tabindex="-1"></a>racedf <span class="ot">&lt;-</span> res<span class="sc">$</span>RACE <span class="sc">|&gt;</span></span>
+<span id="cb2-85"><a href="#cb2-85" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> ARM,</span>
+<span id="cb2-86"><a href="#cb2-86" tabindex="-1"></a>              <span class="at">values_from =</span> <span class="fu">c</span>(cnt, pct)) <span class="sc">|&gt;</span></span>
+<span id="cb2-87"><a href="#cb2-87" tabindex="-1"></a>  <span class="fu">transmute</span>(anal_var, <span class="at">label =</span> RACE,</span>
+<span id="cb2-88"><a href="#cb2-88" tabindex="-1"></a>            <span class="at">trtA =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%1d (%3.0f%%)&quot;</span>, <span class="st">`</span><span class="at">cnt_ARM A</span><span class="st">`</span>, <span class="st">`</span><span class="at">pct_ARM A</span><span class="st">`</span>),</span>
+<span id="cb2-89"><a href="#cb2-89" tabindex="-1"></a>            <span class="at">trtB =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%1d (%3.0f%%)&quot;</span>, <span class="st">`</span><span class="at">cnt_ARM B</span><span class="st">`</span>, <span class="st">`</span><span class="at">pct_ARM B</span><span class="st">`</span>),</span>
+<span id="cb2-90"><a href="#cb2-90" tabindex="-1"></a>            <span class="at">trtC =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%1d (%3.0f%%)&quot;</span>, <span class="st">`</span><span class="at">cnt_ARM C</span><span class="st">`</span>, <span class="st">`</span><span class="at">pct_ARM C</span><span class="st">`</span>),</span>
+<span id="cb2-91"><a href="#cb2-91" tabindex="-1"></a>            <span class="at">trtD =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%1d (%3.0f%%)&quot;</span>, <span class="st">`</span><span class="at">cnt_ARM D</span><span class="st">`</span>, <span class="st">`</span><span class="at">pct_ARM D</span><span class="st">`</span>))</span>
+<span id="cb2-92"><a href="#cb2-92" tabindex="-1"></a></span>
+<span id="cb2-93"><a href="#cb2-93" tabindex="-1"></a><span class="co"># View analysis results</span></span>
+<span id="cb2-94"><a href="#cb2-94" tabindex="-1"></a>racedf</span>
+<span id="cb2-95"><a href="#cb2-95" tabindex="-1"></a><span class="co"># # A tibble: 2 × 6</span></span>
+<span id="cb2-96"><a href="#cb2-96" tabindex="-1"></a><span class="co">#   anal_var RACE                      trtA     trtB     trtC     trtD    </span></span>
+<span id="cb2-97"><a href="#cb2-97" tabindex="-1"></a><span class="co">#   &lt;chr&gt;    &lt;chr&gt;                     &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;   </span></span>
+<span id="cb2-98"><a href="#cb2-98" tabindex="-1"></a><span class="co"># 1 RACE     BLACK OR AFRICAN AMERICAN 0 (  0%) 0 (  0%) 1 ( 50%) 0 (  0%)</span></span>
+<span id="cb2-99"><a href="#cb2-99" tabindex="-1"></a><span class="co"># 2 RACE     WHITE                     2 (100%) 2 (100%) 1 ( 50%) 3 (100%)</span></span>
+<span id="cb2-100"><a href="#cb2-100" tabindex="-1"></a></span>
+<span id="cb2-101"><a href="#cb2-101" tabindex="-1"></a><span class="co"># Combine all analysis into final data frame</span></span>
+<span id="cb2-102"><a href="#cb2-102" tabindex="-1"></a>final <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(agedf, sexdf, racedf)</span>
+<span id="cb2-103"><a href="#cb2-103" tabindex="-1"></a></span>
+<span id="cb2-104"><a href="#cb2-104" tabindex="-1"></a></span>
+<span id="cb2-105"><a href="#cb2-105" tabindex="-1"></a><span class="co"># View final data frame</span></span>
+<span id="cb2-106"><a href="#cb2-106" tabindex="-1"></a><span class="co"># - This data frame is ready reporting</span></span>
+<span id="cb2-107"><a href="#cb2-107" tabindex="-1"></a>final</span>
+<span id="cb2-108"><a href="#cb2-108" tabindex="-1"></a><span class="co"># # A tibble: 8 × 6</span></span>
+<span id="cb2-109"><a href="#cb2-109" tabindex="-1"></a><span class="co">#   anal_var label                     trtA        trtB         trtC        trtD        </span></span>
+<span id="cb2-110"><a href="#cb2-110" tabindex="-1"></a><span class="co">#   &lt;chr&gt;    &lt;chr&gt;                     &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;       </span></span>
+<span id="cb2-111"><a href="#cb2-111" tabindex="-1"></a><span class="co"># 1 AGE      N                         2           2            2           3           </span></span>
+<span id="cb2-112"><a href="#cb2-112" tabindex="-1"></a><span class="co"># 2 AGE      Mean (Std)                32.5 (2.12) 36.5 (14.85) 46.0 (1.41) 52.3 (18.93)</span></span>
+<span id="cb2-113"><a href="#cb2-113" tabindex="-1"></a><span class="co"># 3 AGE      Median                    32.5        36.5         46.0        44.0        </span></span>
+<span id="cb2-114"><a href="#cb2-114" tabindex="-1"></a><span class="co"># 4 AGE      Min-Max                   31.0-34.0   26.0-47.0    45.0-47.0   39.0-74.0   </span></span>
+<span id="cb2-115"><a href="#cb2-115" tabindex="-1"></a><span class="co"># 5 SEX      F                         0 (  0%)    1 ( 50%)     2 (100%)    0 (  0%)    </span></span>
+<span id="cb2-116"><a href="#cb2-116" tabindex="-1"></a><span class="co"># 6 SEX      M                         2 (100%)    1 ( 50%)     0 (  0%)    3 (100%)    </span></span>
+<span id="cb2-117"><a href="#cb2-117" tabindex="-1"></a><span class="co"># 7 RACE     BLACK OR AFRICAN AMERICAN 0 (  0%)    0 (  0%)     1 ( 50%)    0 (  0%)    </span></span>
+<span id="cb2-118"><a href="#cb2-118" tabindex="-1"></a><span class="co"># 8 RACE     WHITE                     2 (100%)    2 (100%)     1 ( 50%)    3 (100%) </span></span>
+<span id="cb2-119"><a href="#cb2-119" tabindex="-1"></a></span>
+<span id="cb2-120"><a href="#cb2-120" tabindex="-1"></a><span class="co"># Perform reporting here</span></span></code></pre></div>
+<p>While somewhat more complicated, the serial ARDS approach provides
+more flexibility. If desired, you could create additional programs for
+intext tables, figures, or for uploads to <a href="https://clinicaltrials.gov/">ClinicalTrials.gov</a>. All of these
+outputs can be created from the ARDS dataset.</p>
+<p>Next Steps: <a href="ards-faq.html">Frequently Asked
+Questions</a></p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
